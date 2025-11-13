@@ -21,6 +21,20 @@ function setupEventListeners() {
   // Оффлайн режим
   document.getElementById('start-offline-btn').addEventListener('click', startOfflineGame);
   
+  // Кнопка настроек управления
+  const controlsBtn = document.getElementById('controls-settings-btn');
+  if (controlsBtn) {
+    controlsBtn.addEventListener('click', () => {
+      alert('Настройки управления:\n\nИгрок 1: W/A/S/D или Ц/Ф/Ы/В\nИгрок 2: T/F/G/H или Н/П/Р/О\nИгрок 3: I/J/K/L или З/Д/Ж/Э\nИгрок 4: Стрелки\n\nПауза: ` или Ё');
+    });
+  }
+  
+  // Кнопка паузы
+  const pauseBtn = document.getElementById('pause-btn');
+  if (pauseBtn) {
+    pauseBtn.addEventListener('click', togglePause);
+  }
+  
   // Онлайн режим
   document.getElementById('join-room-btn').addEventListener('click', joinOnlineRoom);
   document.getElementById('start-round-btn').addEventListener('click', () => {
@@ -68,6 +82,27 @@ function setupEventListeners() {
   }
 }
 
+let isPaused = false;
+
+function togglePause() {
+  isPaused = !isPaused;
+  
+  const pauseBtn = document.getElementById('pause-btn');
+  if (pauseBtn) {
+    pauseBtn.querySelector('span').textContent = isPaused ? '▶' : '⏸';
+  }
+  
+  if (renderer) {
+    if (isPaused) {
+      renderer.stop();
+    } else {
+      renderer.start();
+    }
+  }
+  
+  console.log(isPaused ? 'Игра на паузе' : 'Игра продолжена');
+}
+
 function startOfflineGame() {
   const humanCount = parseInt(document.getElementById('human-players').value);
   const botCount = parseInt(document.getElementById('bot-count').value);
@@ -83,6 +118,22 @@ function startOfflineGame() {
   // Создаем рендерер
   renderer = new Renderer('game-board');
   renderer.start();
+  
+  // Создаем контроллер с поддержкой паузы
+  if (!controls) {
+    controls = new Controls({
+      isRunning: () => renderer && renderer.running && !isPaused,
+      changeDirection: (playerIndex, dir) => {
+        console.log('Направление изменено:', playerIndex, dir);
+      },
+      getHumanCount: () => humanCount,
+      getPlayerControl: (index) => {
+        const controls = ['keyboard1', 'keyboard2', 'keyboard3', 'keyboard4'];
+        return controls[index] || 'keyboard1';
+      },
+      togglePause: togglePause
+    });
+  }
   
   // Здесь должна быть логика оффлайн игры
   // Пока просто показываем игровое поле
@@ -125,14 +176,15 @@ async function joinOnlineRoom() {
     // Создаем контроллер
     if (!controls) {
       controls = new Controls({
-        isRunning: () => renderer && renderer.running,
+        isRunning: () => renderer && renderer.running && !isPaused,
         changeDirection: (playerIndex, dir) => {
           if (onlineGame && onlineGame.myPlayers[playerIndex]) {
             onlineGame.sendDirection(onlineGame.myPlayers[playerIndex].id, dir);
           }
         },
         getHumanCount: () => onlineGame ? onlineGame.myPlayers.length : 0,
-        getPlayerControl: () => Storage.loadPlayerSettings().controlType
+        getPlayerControl: () => Storage.loadPlayerSettings().controlType,
+        togglePause: togglePause
       });
     }
     

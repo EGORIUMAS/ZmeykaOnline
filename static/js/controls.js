@@ -50,13 +50,34 @@ class Controls {
   }
   
   handleKeyDown(e) {
+    // Проверка на паузу
+    const key = e.key.toLowerCase();
+    if (key === '`' || key === 'ё') {
+      if (this.game.togglePause) {
+        this.game.togglePause();
+      }
+      e.preventDefault();
+      return;
+    }
+    
     if (!this.game.isRunning()) return;
     
     const keyMaps = {
-      keyboard1: { 'ц': {x:0,y:-1}, 'ы': {x:0,y:1}, 'ф': {x:-1,y:0}, 'в': {x:1,y:0} },
-      keyboard2: { 'н': {x:0,y:-1}, 'р': {x:0,y:1}, 'п': {x:-1,y:0}, 'о': {x:1,y:0} },
-      keyboard3: { 'з': {x:0,y:-1}, 'ж': {x:0,y:1}, 'д': {x:-1,y:0}, 'э': {x:1,y:0} },
-      keyboard4: { 'ArrowUp': {x:0,y:-1}, 'ArrowDown': {x:0,y:1}, 'ArrowLeft': {x:-1,y:0}, 'ArrowRight': {x:1,y:0} }
+      keyboard1: { 
+        'ц': {x:0,y:-1}, 'ы': {x:0,y:1}, 'ф': {x:-1,y:0}, 'в': {x:1,y:0},
+        'w': {x:0,y:-1}, 's': {x:0,y:1}, 'a': {x:-1,y:0}, 'd': {x:1,y:0}
+      },
+      keyboard2: { 
+        'н': {x:0,y:-1}, 'р': {x:0,y:1}, 'п': {x:-1,y:0}, 'о': {x:1,y:0},
+        't': {x:0,y:-1}, 'g': {x:0,y:1}, 'f': {x:-1,y:0}, 'h': {x:1,y:0}
+      },
+      keyboard3: { 
+        'з': {x:0,y:-1}, 'ж': {x:0,y:1}, 'д': {x:-1,y:0}, 'э': {x:1,y:0},
+        'i': {x:0,y:-1}, 'k': {x:0,y:1}, 'j': {x:-1,y:0}, 'l': {x:1,y:0}
+      },
+      keyboard4: { 
+        'ArrowUp': {x:0,y:-1}, 'ArrowDown': {x:0,y:1}, 'ArrowLeft': {x:-1,y:0}, 'ArrowRight': {x:1,y:0}
+      }
     };
     
     const humanCount = this.game.getHumanCount();
@@ -65,7 +86,6 @@ class Controls {
       const keyMap = keyMaps[control];
       
       if (keyMap) {
-        const key = e.key.toLowerCase();
         const dir = keyMap[key] || keyMap[e.key];
         
         if (dir) {

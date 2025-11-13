@@ -49,6 +49,56 @@ class UI {
         this.showScreen('mode-selection');
       });
     });
+    
+    // Поддержка Enter для кнопок
+    this.setupEnterKeySupport();
+  }
+  
+  static setupEnterKeySupport() {
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      
+      // Проверяем активный экран
+      const activeScreen = document.querySelector('.screen.active');
+      if (!activeScreen) return;
+      
+      const screenId = activeScreen.id;
+      
+      // Настройка управления
+      if (screenId === 'offline-setup') {
+        const controlsBtn = document.getElementById('controls-settings-btn');
+        const startBtn = document.getElementById('start-offline-btn');
+        
+        // Если фокус на кнопке настроек или она видна
+        if (document.activeElement === controlsBtn || !document.activeElement || document.activeElement === document.body) {
+          if (controlsBtn && controlsBtn.offsetParent !== null) {
+            // Пока просто запускаем игру, так как настройки управления не реализованы
+            startBtn.click();
+          }
+        } else {
+          startBtn.click();
+        }
+      }
+      
+      // Начать игру (онлайн)
+      if (screenId === 'online-setup') {
+        document.getElementById('join-room-btn').click();
+      }
+      
+      // Продолжить игру (лобби)
+      if (screenId === 'lobby-screen') {
+        const startRoundBtn = document.getElementById('start-round-btn');
+        if (startRoundBtn && startRoundBtn.style.display !== 'none') {
+          startRoundBtn.click();
+        }
+      }
+      
+      // Играть снова
+      const gameOver = document.getElementById('game-over');
+      if (gameOver && gameOver.classList.contains('active')) {
+        document.getElementById('play-again-btn').click();
+      }
+    });
   }
   
   static showScreen(screenId) {
