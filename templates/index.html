@@ -1,1027 +1,2859 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>Змейка Онлайн 🐍</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Змейка — до 8 участников</title>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --purple-700: #7C4DFF;
-      --purple-900: #5A31C9;
-      --green-500: #00C853;
-      --bg-1: linear-gradient(135deg, rgba(32,6,64,1) 0%, rgba(8,18,32,1) 60%);
-      --panel: rgba(255,255,255,0.04);
-      color-scheme: dark;
+    :root {
+      --primary-color: #7C4DFF;
+      --secondary-color: #9C27B0;
+      --success-color: #00C853;
+      --danger-color: #f72585;
+      --warning-color: #ff9e6d;
+      --dark-bg: #0d1b2a;
+      --light-text: #f8f9fa;
+      --card-bg: rgba(30, 20, 50, 0.85);
+      --purple-glow: rgba(124, 77, 255, 0.6);
+      --green-glow: rgba(0, 200, 83, 0.6);
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body {
-      height: 100%;
-      font-family: Inter, "Segoe UI", Roboto, system-ui, -apple-system, Arial;
-      background: var(--bg-1);
-      color: #eaf0ff;
-      -webkit-font-smoothing: antialiased;
-      overflow: hidden;
-      touch-action: manipulation; /* Оптимизация для тач-устройств */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-
-    /* Экран лобби */
-    #lobbyScreen {
+    body {
+      margin: 0;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100%;
-      padding: 20px;
+      justify-content: flex-start;
+      background: linear-gradient(135deg, #1a0033, #0d4d2d, #2d1b4e, #004d26);
+      background-size: 400% 400%;
+      font-family: 'Exo 2', 'Segoe UI', sans-serif;
+      color: var(--light-text);
+      padding: 16px 12px;
+      min-height: 100vh;
+      overflow: hidden;
+      animation: gradientBG 15s ease infinite;
     }
-    .lobby-card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-      border-radius: 20px;
-      padding: 30px;
-      max-width: 500px;
-      width: 100%;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
     h1 {
-      font-size: 32px;
-      margin-bottom: 10px;
-      background: linear-gradient(90deg, var(--purple-700), var(--green-500));
+      margin: 10px 0 16px;
+      text-shadow: 0 4px 15px rgba(124, 77, 255, 0.8), 0 0 30px rgba(0, 200, 83, 0.5);
+      font-size: 2.4em;
+      text-align: center;
+      background: linear-gradient(to right, #00FF7F, #7C4DFF, #00C853, #9C27B0);
       -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
       background-clip: text;
-    }
-    .subtitle {
-      color: #cbd6ff88;
-      font-size: 14px;
-      margin-bottom: 24px;
-    }
-    .form-group {
-      margin-bottom: 16px;
-    }
-    label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: #cbd6ffcc;
-    }
-    input, select {
-      width: 100%;
-      background: rgba(0,0,0,0.4);
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 12px 14px;
-      border-radius: 10px;
-      color: white;
-      font-size: 15px;
-      outline: none;
-      transition: all 0.2s;
-    }
-    input:focus, select:focus {
-      border-color: var(--purple-700);
-      box-shadow: 0 0 0 3px rgba(124,77,255,0.1);
-    }
-    button {
-      width: 100%;
-      background: linear-gradient(90deg, var(--purple-700), var(--purple-900));
-      border: none;
-      color: white;
-      padding: 14px;
-      border-radius: 12px;
-      font-size: 16px;
+      -webkit-text-fill-color: transparent;
       font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 8px 24px rgba(124,77,255,0.3);
+      letter-spacing: -0.5px;
+      position: relative;
+      animation: titleGlow 3s ease-in-out infinite;
     }
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 32px rgba(124,77,255,0.4);
+    @keyframes titleGlow {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.3); }
     }
-    button:active {
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(to right, #00C853, #7C4DFF);
+      border-radius: 2px;
+      box-shadow: 0 0 10px rgba(0, 200, 83, 0.8);
+    }
+    h2 {
+      margin-bottom: 12px;
+      font-size: 1.6em;
+      color: #f8f9fa;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      font-weight: 600;
+    }
+    #setup-screen, #controls-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+      background: var(--card-bg);
+      padding: 24px;
+      border-radius: 20px;
+      width: 96%;
+      max-width: 520px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 20px var(--purple-glow), 0 0 40px var(--green-glow);
+      backdrop-filter: blur(10px);
+      border: 2px solid transparent;
+      background-image: linear-gradient(var(--card-bg), var(--card-bg)), 
+                        linear-gradient(135deg, #7C4DFF, #00C853, #9C27B0);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      animation: fadeInUp 0.6s ease-out forwards, borderGlow 3s ease-in-out infinite;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    @keyframes borderGlow {
+      0%, 100% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 20px var(--purple-glow); }
+      50% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 40px var(--green-glow); }
+    }
+    #setup-screen.active, #controls-screen.active {
+      opacity: 1;
       transform: translateY(0);
     }
-    button.secondary {
-      background: linear-gradient(90deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
-      box-shadow: none;
-    }
-    .desktop-only {
-      display: block;
-    }
-    .mobile-controls-toggle {
-      margin-top: 10px;
-      font-size: 14px;
-      text-align: center;
-    }
-    .mobile-controls-toggle a {
-      color: var(--purple-700);
-      cursor: pointer;
-      text-decoration: underline;
-    }
-
-    /* Экран комнаты */
-    #roomScreen {
+    #controls-screen {
       display: none;
-      flex-direction: column;
-      height: 100%;
-      padding: 20px;
     }
-    .room-header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .room-code {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--purple-700);
-    }
-    .players-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 12px;
-      margin-bottom: 20px;
-      padding: 20px;
-      background: rgba(255,255,255,0.02);
-      border-radius: 16px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-    .player-card {
-      background: rgba(255,255,255,0.04);
-      padding: 12px;
-      border-radius: 12px;
+    .selection-row {
       display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .player-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--purple-700);
-      display: flex;
+      gap: 16px;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
-      font-size: 18px;
-    }
-    .start-button-wrap {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    /* Игровой экран */
-    #gameScreen {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: #000;
-      flex-direction: column;
-      touch-action: none; /* Отключаем стандартные жесты браузера */
-    }
-    .game-hud {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px 20px;
-      background: rgba(0,0,0,0.8);
-      backdrop-filter: blur(10px);
-      align-items: center;
       flex-wrap: wrap;
-      gap: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 12px 20px;
+      border-radius: 16px;
+      width: 100%;
     }
-    .scores-row {
+    /* Стили для выбора режима игры */
+    .game-mode-selection {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      width: 100%;
+    }
+    .mode-selector {
       display: flex;
       gap: 12px;
+      position: relative;
       flex-wrap: wrap;
     }
-    .score-chip {
-      background: rgba(255,255,255,0.06);
-      padding: 8px 14px;
-      border-radius: 20px;
-      font-size: 14px;
+    .mode-btn {
+      padding: 8px 16px;
+      background: linear-gradient(135deg, rgba(124, 77, 255, 0.6), rgba(156, 39, 176, 0.6));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
       font-weight: 600;
+      position: relative;
+      min-width: 100px;
+      text-align: center;
+      font-family: 'Exo 2', sans-serif;
+      border: 1px solid rgba(124, 77, 255, 0.3);
+    }
+    .mode-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--purple-glow), 0 0 20px var(--green-glow);
+      background: linear-gradient(135deg, rgba(124, 77, 255, 0.8), rgba(0, 200, 83, 0.6));
+    }
+    .mode-btn.active {
+      background: linear-gradient(45deg, var(--primary-color), var(--success-color));
+      box-shadow: 0 0 0 2px #00C853, 0 0 15px var(--purple-glow), 0 0 25px var(--green-glow);
+      border-color: #00C853;
+    }
+    .ghost-container {
+      position: relative;
+    }
+    .ghost-submodes {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      background: rgba(30, 41, 59, 0.95);
+      padding: 12px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      z-index: 10;
+      border: 1px solid rgba(121, 82, 179, 0.5);
+      animation: fadeInUp 0.3s ease;
+      backdrop-filter: blur(8px);
+      min-width: 180px;
+    }
+    .ghost-container:hover .ghost-submodes {
+      display: flex;
+    }
+    .submode-btn {
+      padding: 6px 12px;
+      background: rgba(121, 82, 179, 0.6);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 14px;
+      text-align: left;
+      font-family: 'Exo 2', sans-serif;
+    }
+    .submode-btn:hover {
+      background: rgba(121, 82, 179, 0.9);
+      transform: translateX(3px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    .mode-description {
+      position: absolute;
+      left: 100%;
+      top: 0;
+      width: 320px;
+      background: rgba(13, 27, 42, 0.95);
+      padding: 16px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      z-index: 15;
+      display: none;
+      margin-left: 15px;
+      border: 1px solid rgba(121, 82, 179, 0.4);
+      font-size: 14px;
+      animation: fadeIn 0.2s ease;
+      backdrop-filter: blur(10px);
+      color: #e9ecef;
+      pointer-events: none;
+    }
+    .description-content {
+      display: none;
+    }
+    .description-content.active {
+      display: block;
+    }
+    .mode-description::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 18px;
+      width: 0;
+      height: 0;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 8px solid rgba(13, 27, 42, 0.95);
+    }
+    .description-content h3 {
+      color: #00FF7F;
+      margin-bottom: 8px;
+      font-size: 18px;
+      text-shadow: 0 0 10px var(--green-glow);
+    }
+    /* Стили для кнопок выбора управления */
+    .control-options {
+      position: relative;
+      margin: 8px 0;
+    }
+    .control-btn {
+      padding: 10px 16px;
+      background: rgba(121, 82, 179, 0.6);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      font-family: 'Exo 2', sans-serif;
+      width: 90%;
+    }
+    .control-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(121, 82, 179, 0.9);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .control-options-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      background: rgba(30, 41, 59, 0.95);
+      padding: 12px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      z-index: 10;
+      border: 1px solid rgba(121, 82, 179, 0.5);
+      backdrop-filter: blur(8px);
+      width: 90%;
+      margin-top: 5px;
+    }
+    .control-btn.active + .control-options-list,
+    .control-options:hover .control-options-list {
+      display: flex;
+    }
+    .control-option {
+      padding: 8px 12px;
+      background: rgba(67, 97, 238, 0.7);
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 14px;
+      font-family: 'Exo 2', sans-serif;
+    }
+    .control-option:hover {
+      background: rgba(67, 97, 238, 0.9);
+      transform: translateX(3px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    .control-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 380px;
+      margin: 8px 0;
+      padding: 10px 15px;
+      background: rgba(0, 0, 0, 0.15);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+    .control-row:hover {
+      background: rgba(0, 0, 0, 0.25);
+      transform: translateX(5px);
+    }
+    label {
+      font-size: 16px;
+      font-weight: 600;
+      color: #e9ecef;
+    }
+    select {
+      padding: 10px 16px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: 2px solid var(--primary-color);
+      background: rgba(255, 255, 255, 0.92);
+      color: #222;
+      font-weight: 600;
+      font-family: 'Exo 2', sans-serif;
+      transition: all 0.3s ease;
+      min-width: 180px;
+    }
+    select:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--purple-glow), 0 0 15px var(--green-glow);
+      border-color: #00C853;
+    }
+    #error-message {
+      color: var(--danger-color);
+      font-size: 14px;
+      min-height: 22px;
+      font-weight: 600;
+      font-family: 'Exo 2', sans-serif;
+      padding: 5px 10px;
+      border-radius: 8px;
+      background: rgba(247, 37, 133, 0.1);
+      margin: 5px 0;
+      animation: pulseError 0.5s;
+    }
+    @keyframes pulseError {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    button {
+      margin-top: 10px;
+      padding: 14px 32px;
+      font-size: 18px;
+      background: linear-gradient(135deg, var(--primary-color), var(--success-color), var(--secondary-color));
+      color: white;
+      border: 2px solid rgba(0, 200, 83, 0.5);
+      border-radius: 60px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      box-shadow: 0 6px 15px var(--purple-glow), 0 0 20px var(--green-glow);
+      position: relative;
+      overflow: hidden;
+      font-family: 'Exo 2', sans-serif;
+    }
+    button::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transform: rotate(30deg);
+      transition: all 0.6s;
+      z-index: 0;
+    }
+    button span {
+      position: relative;
+      z-index: 1;
+    }
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px var(--purple-glow), 0 0 35px var(--green-glow);
+      border-color: #00FF7F;
+    }
+    button:hover::after {
+      animation: shine 1.5s infinite;
+    }
+    @keyframes shine {
+      0% { left: -50%; }
+      100% { left: 150%; }
+    }
+    button:active {
+      transform: translateY(1px);
+    }
+    button:disabled {
+      background: linear-gradient(45deg, #6c757d, #495057);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+    button.secondary {
+      background: linear-gradient(45deg, #495057, #343a40);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+    }
+    button.secondary:hover {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    }
+    #game-container {
+      position: relative;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 30px var(--purple-glow), 0 0 50px var(--green-glow);
+      border-radius: 16px;
+      overflow: hidden;
+      display: none;
+      width: 100%;
+      max-width: 1200px;
+      margin: 16px 0;
+      border: 3px solid transparent;
+      background: rgba(13, 27, 42, 0.7);
+      background-image: linear-gradient(rgba(13, 27, 42, 0.7), rgba(13, 27, 42, 0.7)), 
+                        linear-gradient(135deg, #7C4DFF, #00C853, #9C27B0);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      animation: containerGlow 3s infinite alternate;
+    }
+    @keyframes containerGlow {
+      0% { box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 20px var(--purple-glow), 0 0 30px var(--green-glow); }
+      100% { box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 40px var(--green-glow), 0 0 60px var(--purple-glow); }
+    }
+    #game-board {
+      background: var(--dark-bg);
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 2 / 1;
+    }
+    #scores, #legend {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      width: 100%;
+      max-width: 1200px;
+      margin: 12px 0;
+      font-size: 15px;
+      font-weight: 700;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+      font-family: 'Exo 2', sans-serif;
+      animation: slideIn 0.5s ease-out;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .legend-item {
       display: flex;
       align-items: center;
       gap: 8px;
+      background: rgba(30, 41, 59, 0.6);
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 14px;
     }
-    .score-dot {
+    .legend-color {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    #game-over {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.94);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 10;
+      backdrop-filter: blur(5px);
+    }
+    #game-over.active {
+      opacity: 1;
+      pointer-events: all;
+      animation: modalPop 0.6s ease-out;
+    }
+    @keyframes modalPop {
+      0% { transform: scale(0.8); opacity: 0; }
+      80% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .game-over-content {
+      text-align: center;
+      max-width: 80%;
+      animation: fadeIn 0.8s ease-out;
+    }
+    .game-over-content h2 {
+      font-size: 2.2em;
+      margin-bottom: 16px;
+      color: #fff;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+      background: linear-gradient(to right, #ff9e6d, #f72585);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    #final-scores {
+      margin: 15px 0;
+      max-height: 180px;
+      overflow-y: auto;
+      padding: 15px;
+      background: rgba(13, 27, 42, 0.7);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 450px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    #final-scores div {
+      padding: 6px 0;
+      font-size: 16px;
+      font-weight: 600;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+    }
+    #final-scores div:last-child {
+      border-bottom: none;
+    }
+    #winner {
+      font-size: 1.4em;
+      font-weight: 700;
+      color: #4cc9f0;
+      text-shadow: 0 0 10px rgba(76, 201, 240, 0.7);
+      margin: 8px 0;
+    }
+    .instructions {
+      margin-top: 20px;
+      padding: 16px;
+      background: rgba(30, 41, 59, 0.7);
+      border-radius: 16px;
+      max-width: 500px;
+      font-size: 14px;
+      text-align: center;
+      border: 1px solid rgba(76, 175, 80, 0.3);
+    }
+    .instructions p {
+      margin: 8px 0;
+      line-height: 1.5;
+    }
+    kbd {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-family: 'Exo 2', monospace;
+      font-size: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      display: inline-block;
+      min-width: 28px;
+      text-align: center;
+    }
+    .control-preview {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .player-indicator {
       width: 12px;
       height: 12px;
       border-radius: 50%;
+      margin-right: 5px;
+      display: inline-block;
     }
-    .game-canvas-wrap {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .ghost-indicator {
       position: relative;
+      display: inline-block;
+      margin-left: 5px;
+    }
+    .ghost-indicator::after {
+      content: '👻';
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    .selected-mode-display {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      background: linear-gradient(135deg, rgba(124, 77, 255, 0.15), rgba(0, 200, 83, 0.15));
+      padding: 12px 20px;
+      border-radius: 12px;
+      width: 100%;
+      font-weight: 600;
+      font-size: 15px;
+      border: 2px solid transparent;
+      background-image: linear-gradient(135deg, rgba(124, 77, 255, 0.15), rgba(0, 200, 83, 0.15)), 
+                        linear-gradient(135deg, #7C4DFF, #00C853);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+    }
+    .selected-mode-display span.mode-name {
+      color: #00FF7F;
+      font-weight: 700;
+      text-shadow: 0 0 10px var(--green-glow);
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @media (max-width: 768px) {
+      h1 { font-size: 1.9em; }
+      .mode-description {
+        left: auto;
+        right: 0;
+        top: auto;
+        bottom: 100%;
+        margin-left: 0;
+        margin-bottom: 15px;
+        width: 300px;
+        font-size: 13px;
+      }
+      .mode-description::before {
+        top: auto;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-top: 8px solid rgba(13, 27, 42, 0.95);
+        border-right: 8px solid transparent;
+        border-left: 8px solid transparent;
+        border-bottom: none;
+      }
+      #setup-screen, #controls-screen { padding: 20px; gap: 18px; }
+      button { font-size: 16px; padding: 12px 26px; }
+      .selection-row { flex-direction: column; gap: 12px; }
+      #scores, #legend { font-size: 13px; gap: 8px; }
+    }
+    @media (max-width: 480px) {
+      h1 { font-size: 1.7em; }
+      h2 { font-size: 1.4em; }
+      .ghost-container {
+        width: 100%;
+      }
+      .mode-selector {
+        flex-direction: column;
+        align-items: center;
+      }
+      button { font-size: 15px; padding: 10px 22px; }
+      #game-container { margin: 10px 0; }
+      .mode-description {
+        display: none !important;
+      }
+      .selected-mode-display {
+        padding: 10px 15px;
+        font-size: 14px;
+      }
+    }
+    /* Стили для анимированных частиц */
+    .particle {
+      position: absolute;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0;
+    }
+    .floating-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
       overflow: hidden;
     }
-    #gameCanvas {
-      background: #0a1628;
-      max-width: 100%;
-      max-height: 100%;
-      touch-action: none; /* Критически важно для свайпов! */
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 4s infinite;
     }
-
-    /* Мобильные кнопки */
-    .mobile-dpad {
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+    /* Стили для кнопки стрельбы */
+    .shoot-btn {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      width: 160px;
-      height: 160px;
-      display: none;
       z-index: 100;
-    }
-    .dpad-grid {
-      width: 100%;
-      height: 100%;
-      display: grid;
-      grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
-      gap: 8px;
-      background: rgba(255,255,255,0.04);
-      border-radius: 20px;
-      padding: 10px;
-      backdrop-filter: blur(10px);
-    }
-    .dpad-btn {
-      background: rgba(255,255,255,0.1);
-      border: 2px solid rgba(255,255,255,0.2);
-      border-radius: 12px;
-      color: white;
-      font-size: 24px;
-      font-weight: 700;
+      padding: 12px 20px;
+      font-size: 16px;
+      background: radial-gradient(circle, #FFD700, #FFA500);
+      color: #333;
+      border: none;
+      border-radius: 50%;
       cursor: pointer;
-      user-select: none;
-      touch-action: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .dpad-btn:active {
-      background: rgba(124,77,255,0.5);
-    }
-
-    /* Оверлей инсульта */
-    .stroke-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(255,0,0,0.15);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.6);
       display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 200;
-      pointer-events: none;
-      animation: strokePulse 0.5s infinite;
     }
-    .stroke-overlay.active {
-      display: flex;
+    .shoot-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 2px 6px rgba(255, 215, 0, 0.8);
     }
-    @keyframes strokePulse {
-      0%, 100% { background: rgba(255,0,0,0.1); }
-      50% { background: rgba(255,0,0,0.25); }
+    .shoot-btn.show {
+      display: block;
+      animation: pulse 1.5s infinite;
     }
-    .stroke-card {
-      background: linear-gradient(135deg, rgba(255,0,0,0.9), rgba(200,0,0,0.9));
-      padding: 30px 40px;
-      border-radius: 20px;
-      text-align: center;
-      box-shadow: 0 20px 60px rgba(255,0,0,0.5);
-      animation: strokeShake 0.1s infinite;
-    }
-    @keyframes strokeShake {
-      0%, 100% { transform: translateX(0) rotate(0deg); }
-      25% { transform: translateX(-5px) rotate(-2deg); }
-      75% { transform: translateX(5px) rotate(2deg); }
-    }
-    .stroke-title {
-      font-size: 48px;
-      font-weight: 900;
-      margin-bottom: 10px;
-    }
-    .stroke-subtitle {
-      font-size: 20px;
-      opacity: 0.9;
-    }
-
-    /* Модальное окно окончания раунда */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.8);
-      align-items: center;
-      justify-content: center;
-      z-index: 300;
-    }
-    .modal.active {
-      display: flex;
-    }
-    .modal-content {
-      background: linear-gradient(180deg, rgba(40,20,80,1), rgba(20,10,40,1));
-      padding: 40px;
-      border-radius: 24px;
-      max-width: 500px;
-      width: 90%;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.8);
-    }
-    .modal-title {
-      font-size: 32px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .results-list {
-      margin: 20px 0;
-    }
-    .result-item {
-      padding: 12px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 10px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    /* Визуальная обратная связь для свайпов */
-    .swipe-indicator {
-      position: fixed;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.2s;
-      z-index: 1000;
-    }
-    .swipe-indicator.active {
-      opacity: 0.7;
-    }
-    .swipe-arrow {
-      font-size: 48px;
-      text-shadow: 0 0 10px rgba(255,255,255,0.8);
-    }
-
-    /* Адаптив */
-    @media (max-width: 768px) {
-      .desktop-only { display: none; }
-      .mobile-dpad { display: block; }
-      #gameCanvas { width: 100vw; height: calc(100vh - 80px); }
-      .game-hud { font-size: 12px; }
-      .score-chip { padding: 6px 10px; font-size: 12px; }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
+      70% { box-shadow: 0 0 0 12px rgba(255, 215, 0, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
     }
   </style>
 </head>
 <body>
-  <!-- Экран лобби -->
-  <div id="lobbyScreen">
-    <div class="lobby-card">
-      <h1>🐍 Змейка Онлайн</h1>
-      <p class="subtitle">Играйте с друзьями в реальном времени</p>
-
-      <div class="form-group">
-        <label>Ваш ник</label>
-        <input type="text" id="nicknameInput" value="Игрок" maxlength="20" />
+  <div class="floating-bg" id="floating-bg"></div>
+  <h1>Змейка — до 8 участников</h1>
+  <div id="setup-screen">
+    <h2>Настройте игру</h2>
+    <div class="selection-row">
+      <label for="human-players">Игроков (1–4):</label>
+      <select id="human-players">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+    </div>
+    <div class="selection-row">
+      <label for="bot-count">Ботов (0–7):</label>
+      <select id="bot-count">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+      </select>
+    </div>
+    <div class="selection-row game-mode-selection">
+      <label>Режим игры:</label>
+      <div class="mode-selector">
+        <button class="mode-btn active" data-mode="classic">Классика</button>
+        <div class="ghost-container">
+          <button class="mode-btn" data-mode="ghost-main">Призрак</button>
+          <div class="ghost-submodes">
+            <button class="submode-btn" data-mode="half-ghost">Полупризрак</button>
+            <button class="submode-btn" data-mode="family-ghost">Семейка недопризраков</button>
+            <button class="submode-btn" data-mode="full-ghost">Полноценный призрак</button>
+            <button class="submode-btn" data-mode="all-ghosts">Компашка призраков</button>
+          </div>
+        </div>
+        <button class="mode-btn" data-mode="magic-shooter">Магический шутер</button>
+        <div class="mode-description">
+          <div class="description-content active" data-mode="classic">
+            <h3>Классический режим</h3>
+            <p>Стандартные правила змейки. Столкновение с хвостом или другими змейками приводит к проигрышу. Все участники полностью видны на поле.</p>
+          </div>
+          <div class="description-content" data-mode="ghost-main">
+            <h3>Режим "Призрак"</h3>
+            <p>В этом режиме змейки могут становиться невидимыми. Видны только головы с глазами. Наведите курсор на варианты ниже, чтобы выбрать конкретный режим.</p>
+          </div>
+          <div class="description-content" data-mode="half-ghost">
+            <h3>Полупризрак</h3>
+            <p>Случайным образом игроки становятся невидимыми на 5 секунд. Хвост призрака полностью невидим и не имеет хитбокса. Интервал между исчезаниями не меньше 5 секунд.</p>
+          </div>
+          <div class="description-content" data-mode="family-ghost">
+            <h3>Семейка недопризраков</h3>
+            <p>Все змейки (игроки и боты) могут становиться призраками. Хвост призрака невидим, но сохраняет хитбокс, то есть об него можно умереть.</p>
+          </div>
+          <div class="description-content" data-mode="full-ghost">
+            <h3>Полноценный призрак</h3>
+            <p>Игроки-люди являются призраками с начала игры. Хвост призрака невидим. Об хвост призрака может умереть только другой призрак.</p>
+          </div>
+          <div class="description-content" data-mode="all-ghosts">
+            <h3>Компашка призраков</h3>
+            <p>Все змейки являются призраками с начала игры. Хвосты невидимы, но сохраняют хитбоксы. Самый сложный режим — нужно запоминать положение невидимых хвостов.</p>
+          </div>
+          <div class="description-content" data-mode="magic-shooter">
+            <h3>Магический шутер</h3>
+            <p>С вероятностью 30% вместо обычного яблока появляется зачарованное, которое дает один из эффектов на 10 секунд: "Оружие" (40%) - автоматические выстрелы раз в секунду, "Неуязвимость" (40%) - игрок может проходить через другие змейки, "Диарея" (20%) - каждые 5 секунд игрок теряет по 1 клетке.</p>
+          </div>
+        </div>
       </div>
-
-      <div class="form-group">
-        <label>Код комнаты</label>
-        <input type="text" id="roomCodeInput" value="" placeholder="Введите или создайте" />
-      </div>
-
-      <div class="form-group desktop-only">
-        <label>Локальных игроков (только ПК)</label>
-        <select id="localPlayersSelect">
-          <option value="1">1 игрок</option>
-          <option value="2">2 игрока</option>
-          <option value="3">3 игрока</option>
-          <option value="4">4 игрока</option>
+    </div>
+    <div class="selected-mode-display">
+      <span>Выбранный режим:</span>
+      <span class="mode-name" id="selected-mode-display">Классика</span>
+    </div>
+    <div id="error-message"></div>
+    <button id="start-controls-btn"><span>Настроить управление</span></button>
+    <div class="instructions">
+      <p>До 8 змеек могут соревноваться одновременно!</p>
+      <p>Управление: клавиатура или свайпы на экране</p>
+      <p class="ghost-info" style="margin-top: 10px; font-style: italic; color: #ff9e6d;">
+        В режимах "Призрак" и "Магический шутер" могут быть специальные механики
+      </p>
+    </div>
+  </div>
+  <div id="controls-screen">
+    <h2>Настройка управления игроками</h2>
+    <div id="controls-list">
+      <div class="control-row">
+        <label for="control-0">Игрок 1:</label>
+        <select id="control-0">
+          <option value="keyboard1">Клавиатура (ЦФЫВ)</option>
+          <option value="keyboard2">Клавиатура (НПРО)</option>
+          <option value="keyboard3">Клавиатура (ЗДЖЭ)</option>
+          <option value="keyboard4">Клавиатура (Стрелки)</option>
+          <option value="swipe">Свайпы</option>
         </select>
       </div>
-
-      <button id="joinBtn">Создать/Войти в комнату</button>
-
-      <div class="mobile-controls-toggle">
-        <a id="toggleMobileControls">Использовать мобильное управление?</a>
+      <div class="control-row">
+        <label for="control-1">Игрок 2:</label>
+        <select id="control-1">
+          <option value="keyboard1">Клавиатура (ЦФЫВ)</option>
+          <option value="keyboard2">Клавиатура (НПРО)</option>
+          <option value="keyboard3">Клавиатура (ЗДЖЭ)</option>
+          <option value="keyboard4">Клавиатура (Стрелки)</option>
+          <option value="swipe">Свайпы</option>
+        </select>
+      </div>
+      <div class="control-row">
+        <label for="control-2">Игрок 3:</label>
+        <select id="control-2">
+          <option value="keyboard1">Клавиатура (ЦФЫВ)</option>
+          <option value="keyboard2">Клавиатура (НПРО)</option>
+          <option value="keyboard3">Клавиатура (ЗДЖЭ)</option>
+          <option value="keyboard4">Клавиатура (Стрелки)</option>
+          <option value="swipe">Свайпы</option>
+        </select>
+      </div>
+      <div class="control-row">
+        <label for="control-3">Игрок 4:</label>
+        <select id="control-3">
+          <option value="keyboard1">Клавиатура (ЦФЫВ)</option>
+          <option value="keyboard2">Клавиатура (НПРО)</option>
+          <option value="keyboard3">Клавиатура (ЗДЖЭ)</option>
+          <option value="keyboard4">Клавиатура (Стрелки)</option>
+          <option value="swipe">Свайпы</option>
+        </select>
+      </div>
+    </div>
+    <div class="control-preview">
+      <div><kbd>Ц</kbd><kbd>Ф</kbd><kbd>Ы</kbd><kbd>В</kbd></div>
+      <div><kbd>Н</kbd><kbd>П</kbd><kbd>Р</kbd><kbd>О</kbd></div>
+      <div><kbd>З</kbd><kbd>Д</kbd><kbd>Ж</kbd><kbd>Э</kbd></div>
+      <div><kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd></div>
+    </div>
+    <button id="start-btn"><span>Начать игру</span></button>
+    <button id="back-btn" class="secondary"><span>Назад</span></button>
+  </div>
+  <div id="game-container">
+    <canvas id="game-board"></canvas>
+    <div id="game-over">
+      <div class="game-over-content">
+        <h2>Игра окончена!</h2>
+        <p>Победитель: <span id="winner">Ничья</span></p>
+        <div id="final-scores"></div>
+        <button onclick="resetGame()"><span>Играть снова</span></button>
       </div>
     </div>
   </div>
-
-  <!-- Экран комнаты (ожидание) -->
-  <div id="roomScreen">
-    <div class="room-header">
-      <h2>Комната</h2>
-      <div class="room-code">Код: <span id="currentRoomCode"></span></div>
-    </div>
-
-    <div class="players-grid" id="playersGrid">
-      <!-- Игроки добавляются динамически -->
-    </div>
-
-    <div class="start-button-wrap">
-      <button id="startRoundBtn" style="display:none;">🚀 Запустить раунд</button>
-      <button id="leaveRoomBtn" class="secondary">Покинуть комнату</button>
-    </div>
-  </div>
-
-  <!-- Игровой экран -->
-  <div id="gameScreen">
-    <div class="game-hud">
-      <div class="scores-row" id="scoresRow"></div>
-      <button id="exitGameBtn" class="secondary" style="padding:8px 16px;">Выйти</button>
-    </div>
-    <div class="game-canvas-wrap">
-      <canvas id="gameCanvas" width="1200" height="600"></canvas>
-    </div>
-
-    <!-- Мобильный D-pad -->
-    <div class="mobile-dpad">
-      <div class="dpad-grid">
-        <div></div>
-        <button class="dpad-btn" data-dir="up">↑</button>
-        <div></div>
-        <button class="dpad-btn" data-dir="left">←</button>
-        <div></div>
-        <button class="dpad-btn" data-dir="right">→</button>
-        <div></div>
-        <button class="dpad-btn" data-dir="down">↓</button>
-        <div></div>
-      </div>
-    </div>
-
-    <!-- Индикатор свайпов -->
-    <div class="swipe-indicator" id="swipeIndicator">
-      <div class="swipe-arrow">↑</div>
-    </div>
-  </div>
-
-  <!-- Оверлей инсульта -->
-  <div class="stroke-overlay" id="strokeOverlay">
-    <div class="stroke-card">
-      <div class="stroke-title">ИНСУЛЬТ! 😵</div>
-      <div class="stroke-subtitle" id="strokeTimer">Потеря контроля...</div>
-    </div>
-  </div>
-
-  <!-- Модальное окно результатов -->
-  <div class="modal" id="resultsModal">
-    <div class="modal-content">
-      <h2 class="modal-title">🏆 Раунд окончен!</h2>
-      <div class="results-list" id="resultsList"></div>
-      <button id="backToRoomBtn">Вернуться в комнату</button>
-    </div>
-  </div>
-
-  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <div id="scores"></div>
+  <div id="legend"></div>
   <script>
-    // ДИНАМИЧЕСКОЕ ОПРЕДЕЛЕНИЕ URL ДЛЯ ВСЕХ УСТРОЙСТВ
-    const getSocketUrl = () => {
-        return `https://${window.location.hostname}`;
-    };
-
-    const socket = io(getSocketUrl(), {
-        transports: ['websocket'],
-        path: '/socket.io'
-    });
-
-    // Элементы UI
-    const lobbyScreen = document.getElementById('lobbyScreen');
-    const roomScreen = document.getElementById('roomScreen');
-    const gameScreen = document.getElementById('gameScreen');
-    const nicknameInput = document.getElementById('nicknameInput');
-    const roomCodeInput = document.getElementById('roomCodeInput');
-    const localPlayersSelect = document.getElementById('localPlayersSelect');
-    const joinBtn = document.getElementById('joinBtn');
-    const startRoundBtn = document.getElementById('startRoundBtn');
-    const leaveRoomBtn = document.getElementById('leaveRoomBtn');
-    const exitGameBtn = document.getElementById('exitGameBtn');
-    const playersGrid = document.getElementById('playersGrid');
-    const currentRoomCode = document.getElementById('currentRoomCode');
-    const scoresRow = document.getElementById('scoresRow');
-    const strokeOverlay = document.getElementById('strokeOverlay');
-    const strokeTimer = document.getElementById('strokeTimer');
-    const resultsModal = document.getElementById('resultsModal');
-    const resultsList = document.getElementById('resultsList');
-    const backToRoomBtn = document.getElementById('backToRoomBtn');
-    const toggleMobileControls = document.getElementById('toggleMobileControls');
-    const swipeIndicator = document.getElementById('swipeIndicator');
-
-    // Игровые переменные
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const GRID = { w: 60, h: 30 };
-    const TILE = 20;
-
-    let currentRoom = null;
-    let myPlayers = [];
-    let isHost = false;
-    let gameState = { players: [], foods: [] };
-    let particles = [];
-    let isMobile = /Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    let strokeActive = false;
-    let strokeInterval = null;
-    let forceMobileControls = false;
-
-    // Переменные для свайпов
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchStartTime = 0;
-    let isSwiping = false;
-
-    canvas.width = GRID.w * TILE;
-    canvas.height = GRID.h * TILE;
-
-    // Генерация случайного кода комнаты
-    function generateRoomCode() {
-      return Math.random().toString(36).substring(2, 8).toUpperCase();
+  // Инициализация звёздного фона
+  function createStarField() {
+    const bg = document.getElementById('floating-bg');
+    const starsCount = Math.floor(window.innerWidth * window.innerHeight / 5000);
+    for (let i = 0; i < starsCount; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      // Случайный размер
+      const size = Math.random() * 3;
+      star.style.width = `${size}px`;
+      star.style.height = `${size}px`;
+      // Случайное положение
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      // Случайная задержка анимации
+      star.style.animationDelay = `${Math.random() * 4}s`;
+      // Случайная яркость
+      star.style.opacity = Math.random() * 0.8 + 0.2;
+      bg.appendChild(star);
     }
+  }
+  // Вызов функции при загрузке
+  window.addEventListener('load', createStarField);
+  window.addEventListener('resize', () => {
+    document.getElementById('floating-bg').innerHTML = '';
+    createStarField();
+  });
+  const isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  const canvas = document.getElementById('game-board');
+  const ctx = canvas.getContext('2d');
+  function resizeCanvas() {
+    const container = canvas.parentElement;
+    const displayWidth = container.clientWidth;
+    const displayHeight = displayWidth * 0.5; // 2:1
+    canvas.style.width = `${displayWidth}px`;
+    canvas.style.height = `${displayHeight}px`;
+    canvas.width = 1200;
+    canvas.height = 600;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('load', () => {
+    resizeCanvas();
+  });
+  const setupScreen = document.getElementById('setup-screen');
+  const controlsScreen = document.getElementById('controls-screen');
+  const gameContainer = document.getElementById('game-container');
+  const startControlsBtn = document.getElementById('start-controls-btn');
+  const startBtn = document.getElementById('start-btn');
+  const backBtn = document.getElementById('back-btn');
+  const humanSelect = document.getElementById('human-players');
+  const botSelect = document.getElementById('bot-count');
+  const errorMsg = document.getElementById('error-message');
+  const scoresDiv = document.getElementById('scores');
+  const legendDiv = document.getElementById('legend');
+  const gameOverScreen = document.getElementById('game-over');
+  const winnerDisplay = document.getElementById('winner');
+  const finalScoresDiv = document.getElementById('final-scores');
+  const selectedModeDisplay = document.getElementById('selected-mode-display');
+  const gridSize = 20;
+  const tileCountX = 60; // 1200 / 20
+  const tileCountY = 30; // 600 / 20
+  const MAX_PLAYERS = 8;
+  let snakes = [];
+  let directions = [];
+  let scores = [];
+  let colors = [];
+  let playerTypes = [];
+  let botStrategies = [];
+  let foods = [];
+  let particles = [];
+  let gameRunning = false;
+  let foodTimer = null;
+  let totalPlayers = 0;
+  let humanCount = 0;
+  let playerControls = [];
+  let botMemory = []; // Для хранения истории направлений
+  // Переменная для отслеживания выбранного режима
+  let selectedMode = 'classic';
+  let gameMode = 'classic'; // 'classic', 'half-ghost', 'family-ghost', 'full-ghost', 'all-ghosts', 'magic-shooter'
+  let isGhostMode = []; // Состояние "призрака" для каждого игрока
+  let ghostTimers = []; // Таймеры окончания режима призрака
+  let lastGhostActivation = 0; // Время последней активации режима
 
-    if (!roomCodeInput.value) {
-      roomCodeInput.value = generateRoomCode();
+  // Переменные для режима "Магический шутер"
+  const SPECIAL_EFFECTS = {
+    WEAPON: 0,
+    INVULNERABILITY: 1,
+    DIARRHEA: 2
+  };
+  let specialFoodTimers = []; // Таймеры для эффектов игроков
+  let specialEffectTypes = []; // Типы эффектов для каждого игрока
+  let bullets = []; // Массив для отслеживания пуль
+  let diarrheaTimers = []; // Таймеры для эффекта диареи
+  let autoShootTimers = []; // Таймеры автоматической стрельбы
+
+  const BOT_STRATEGIES = {
+    AGGRESSIVE: 0,
+    CAUTIOUS: 1,
+    RANDOM: 2,
+    TERRITORIAL: 3,
+    HUNTER: 4
+  };
+
+  const ALL_STRATEGIES = [
+    BOT_STRATEGIES.AGGRESSIVE,
+    BOT_STRATEGIES.CAUTIOUS,
+    BOT_STRATEGIES.RANDOM,
+    BOT_STRATEGIES.TERRITORIAL,
+    BOT_STRATEGIES.HUNTER
+  ];
+
+  const COLOR_PALETTE = [
+    { head: '#4CAF50', body: '#388E3C', particle: 'hsla(120, 100%, 50%, 1)' },
+    { head: '#2196F3', body: '#0D47A1', particle: 'hsla(200, 100%, 50%, 1)' },
+    { head: '#FF9800', body: '#EF6C00', particle: 'hsla(40, 100%, 50%, 1)' },
+    { head: '#E91E63', body: '#AD1457', particle: 'hsla(330, 100%, 50%, 1)' },
+    { head: '#9C27B0', body: '#6A1B9A', particle: 'hsla(280, 100%, 50%, 1)' },
+    { head: '#00BCD4', body: '#00838F', particle: 'hsla(180, 100%, 50%, 1)' },
+    { head: '#FF5722', body: '#D84315', particle: 'hsla(15, 100%, 50%, 1)' },
+    { head: '#666666', body: '#333333', particle: 'hsla(0, 0%, 50%, 1)' } // Охотник
+  ];
+
+  function getStartPos(index) {
+    const perimeter = [];
+    for (let x = 5; x < tileCountX - 5; x += 5) perimeter.push({x, y: 5});
+    for (let y = 5; y < tileCountY - 5; y += 5) perimeter.push({x: tileCountX - 6, y});
+    for (let x = tileCountX - 6; x >= 5; x -= 5) perimeter.push({x, y: tileCountY - 6});
+    for (let y = tileCountY - 6; y >= 5; y -= 5) perimeter.push({x: 5, y});
+    return perimeter[index % perimeter.length] || {x: 10 + index * 3, y: 10};
+  }
+
+  function isPlayerGhost(playerIndex) {
+    if (gameMode === 'half-ghost' || gameMode === 'family-ghost') {
+      // В этих режимах игрок становится призраком только во время действия эффекта
+      return isGhostMode[playerIndex];
+    } else if (gameMode === 'full-ghost') {
+      // В этом режиме только игроки-люди являются призраками
+      return playerIndex < humanCount;
+    } else if (gameMode === 'all-ghosts') {
+      // В этом режиме все игроки являются призраками
+      return true;
     }
+    return false;
+  }
 
-    // Переключение на мобильное управление
-    toggleMobileControls.addEventListener('click', () => {
-      forceMobileControls = true;
-      alert('Теперь будет использоваться мобильное управление');
-    });
+  function isOccupied(x, y, checkingPlayer = null) {
+    for (let i = 0; i < totalPlayers; i++) {
+      if (!snakes[i]) continue;
 
-    // Присоединение к комнате
-    joinBtn.addEventListener('click', () => {
-      const nickname = nicknameInput.value.trim() || 'Игрок';
-      const room = roomCodeInput.value.trim() || generateRoomCode();
-      const localCount = (isMobile || forceMobileControls) ? 1 : parseInt(localPlayersSelect.value);
+      // Проверяем, является ли игрок призраком и в каком режиме
+      const isGhost = isPlayerGhost(i);
 
-      socket.emit('create_room', {
-        room: room,
-        nickname: nickname,
-        device_type: (isMobile || forceMobileControls) ? 'mobile' : 'desktop',
-        local_count: localCount
-      });
-    });
+      for (let j = 0; j < snakes[i].length; j++) {
+        const seg = snakes[i][j];
 
-    // Обработчики Socket.IO
-    socket.on('joined', (data) => {
-      currentRoom = data.room;
-      myPlayers = data.players;
-      isHost = data.is_host;
-
-      lobbyScreen.style.display = 'none';
-      roomScreen.style.display = 'flex';
-      currentRoomCode.textContent = currentRoom;
-
-      if (isHost) {
-        startRoundBtn.style.display = 'block';
-      }
-    });
-
-    socket.on('players_update', (data) => {
-      playersGrid.innerHTML = '';
-      data.players.forEach(p => {
-        const card = document.createElement('div');
-        card.className = 'player-card';
-        const initial = p.nickname.charAt(0).toUpperCase();
-        const hostBadge = p.sid === data.host_sid ? ' 👑' : '';
-        card.innerHTML = `
-          <div class="player-avatar">${initial}</div>
-          <div>
-            <div style="font-weight:600;">${p.nickname}${hostBadge}</div>
-            <div style="font-size:11px;opacity:0.6;">Готов</div>
-          </div>
-        `;
-        playersGrid.appendChild(card);
-      });
-    });
-
-    socket.on('join_failed', (data) => {
-      alert(data.reason);
-    });
-
-    // Запуск раунда
-    startRoundBtn.addEventListener('click', () => {
-      socket.emit('start_round', { room: currentRoom });
-    });
-
-    socket.on('round_starting', () => {
-      roomScreen.style.display = 'none';
-      gameScreen.style.display = 'flex';
-      enterFullscreen();
-    });
-
-    socket.on('round_started', () => {
-      roomScreen.style.display = 'none';
-      gameScreen.style.display = 'flex';
-      enterFullscreen();
-    });
-
-    // Получение состояния игры
-    socket.on('state', (data) => {
-      gameState = data;
-      updateScoresUI();
-    });
-
-    // Поедание еды
-    socket.on('ate', (data) => {
-      const player = myPlayers.find(p => p.id === data.player_id);
-      if (player) {
-        createParticles(data.pos.x, data.pos.y, data.color);
-      }
-    });
-
-    // Инсульт
-    socket.on('stroke_start', (data) => {
-      const player = myPlayers.find(p => p.id === data.player_id);
-      if (player) {
-        strokeActive = true;
-        strokeOverlay.classList.add('active');
-
-        let remaining = data.duration;
-        strokeTimer.textContent = `Потеря контроля: ${remaining.toFixed(1)}s`;
-
-        if (strokeInterval) clearInterval(strokeInterval);
-        strokeInterval = setInterval(() => {
-          remaining -= 0.1;
-          strokeTimer.textContent = `Потеря контроля: ${Math.max(0, remaining).toFixed(1)}s`;
-          if (remaining <= 0) {
-            clearInterval(strokeInterval);
+        // В режимах "Полупризрак" и "Семейка недопризраков" пропускаем невидимые сегменты
+        // только если это хвост (j > 0) и игрок в режиме призрака
+        if (isGhost && j > 0) {
+          if (gameMode === 'half-ghost') {
+            continue; // Пропускаем невидимые сегменты без хитбокса
+          } else if (gameMode === 'family-ghost' || gameMode === 'all-ghosts') {
+            // В этих режимах невидимые сегменты сохраняют хитбокс
+            // Ничего не делаем, проверяем столкновение
+          } else if (gameMode === 'full-ghost') {
+            // В этом режиме только другие призраки могут столкнуться с хвостом призрака
+            if (checkingPlayer !== null && isPlayerGhost(checkingPlayer)) {
+              // Призраки могут сталкиваться друг с другом
+              if (seg.x === x && seg.y === y) return true;
+            } else {
+              // Обычные игроки не могут столкнуться с хвостом призрака
+              continue;
+            }
           }
-        }, 100);
-      }
-    });
-
-    socket.on('stroke_end', (data) => {
-      const player = myPlayers.find(p => p.id === data.player_id);
-      if (player) {
-        strokeActive = false;
-        strokeOverlay.classList.remove('active');
-        if (strokeInterval) clearInterval(strokeInterval);
-      }
-    });
-
-    // Окончание раунда
-    socket.on('round_end', (data) => {
-      resultsList.innerHTML = '';
-
-      const sortedScores = Object.entries(data.scores)
-        .sort((a, b) => b[1].score - a[1].score);
-
-      sortedScores.forEach(([id, info], idx) => {
-        const item = document.createElement('div');
-        item.className = 'result-item';
-        let medal = '';
-        if (idx === 0) medal = '🥇';
-        else if (idx === 1) medal = '🥈';
-        else if (idx === 2) medal = '🥉';
-        else medal = '🏅';
-
-        // Проверяем, победитель ли это
-        const isWinner = data.winners.some(w => w.id === id);
-        const winnerMark = isWinner ? ' (Победитель!)' : '';
-
-        item.innerHTML = `
-          <span>${medal} ${info.nickname}${winnerMark}</span>
-          <span style="font-weight:700;">${info.score} очков</span>
-        `;
-        resultsList.appendChild(item);
-      });
-
-      resultsModal.classList.add('active');
-      exitFullscreen();
-    });
-
-    backToRoomBtn.addEventListener('click', () => {
-      resultsModal.classList.remove('active');
-      gameScreen.style.display = 'none';
-      roomScreen.style.display = 'flex';
-    });
-
-    // Выход из игры
-    leaveRoomBtn.addEventListener('click', () => {
-      socket.disconnect();
-      location.reload();
-    });
-
-    exitGameBtn.addEventListener('click', () => {
-      gameScreen.style.display = 'none';
-      roomScreen.style.display = 'flex';
-      exitFullscreen();
-    });
-
-    // Управление
-    const keyMap = {
-      'w': {p:0, dir:{x:0,y:-1}}, 'ц': {p:0, dir:{x:0,y:-1}},
-      's': {p:0, dir:{x:0,y:1}}, 'ы': {p:0, dir:{x:0,y:1}},
-      'a': {p:0, dir:{x:-1,y:0}}, 'ф': {p:0, dir:{x:-1,y:0}},
-      'd': {p:0, dir:{x:1,y:0}}, 'в': {p:0, dir:{x:1,y:0}},
-      'arrowup': {p:0, dir:{x:0,y:-1}},
-      'arrowdown': {p:0, dir:{x:0,y:1}},
-      'arrowleft': {p:0, dir:{x:-1,y:0}},
-      'arrowright': {p:0, dir:{x:1,y:0}},
-
-      'i': {p:1, dir:{x:0,y:-1}}, 'ш': {p:1, dir:{x:0,y:-1}},
-      'k': {p:1, dir:{x:0,y:1}}, 'л': {p:1, dir:{x:0,y:1}},
-      'j': {p:1, dir:{x:-1,y:0}}, 'о': {p:1, dir:{x:-1,y:0}},
-      'l': {p:1, dir:{x:1,y:0}}, 'д': {p:1, dir:{x:1,y:0}},
-
-      't': {p:2, dir:{x:0,y:-1}}, 'е': {p:2, dir:{x:0,y:-1}},
-      'g': {p:2, dir:{x:0,y:1}}, 'п': {p:2, dir:{x:0,y:1}},
-      'f': {p:2, dir:{x:-1,y:0}}, 'а': {p:2, dir:{x:-1,y:0}},
-      'h': {p:2, dir:{x:1,y:0}}, 'р': {p:2, dir:{x:1,y:0}},
-
-      'numpad8': {p:3, dir:{x:0,y:-1}},
-      'numpad5': {p:3, dir:{x:0,y:1}},
-      'numpad4': {p:3, dir:{x:-1,y:0}},
-      'numpad6': {p:3, dir:{x:1,y:0}},
-    };
-
-    window.addEventListener('keydown', (e) => {
-      if (gameScreen.style.display !== 'flex') return;
-      const key = e.key.length === 1 ? e.key.toLowerCase() : e.key.toLowerCase();
-      const map = keyMap[key];
-      if (!map || map.p >= myPlayers.length) return;
-
-      socket.emit('input_dir', {
-        room: currentRoom,
-        player_id: myPlayers[map.p].id,
-        dir: map.dir
-      });
-      e.preventDefault();
-    });
-
-    // Мобильный D-pad
-    document.querySelectorAll('.dpad-btn').forEach(btn => {
-      btn.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        if (gameScreen.style.display !== 'flex') return;
-        const dir = btn.dataset.dir;
-        const dirMap = {
-          up: {x:0,y:-1},
-          down: {x:0,y:1},
-          left: {x:-1,y:0},
-          right: {x:1,y:0}
-        };
-        if (myPlayers.length > 0) {
-          socket.emit('input_dir', {
-            room: currentRoom,
-            player_id: myPlayers[0].id,
-            dir: dirMap[dir]
-          });
         }
-      });
 
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (gameScreen.style.display !== 'flex') return;
-        const dir = btn.dataset.dir;
-        const dirMap = {
-          up: {x:0,y:-1},
-          down: {x:0,y:1},
-          left: {x:-1,y:0},
-          right: {x:1,y:0}
-        };
-        if (myPlayers.length > 0) {
-          socket.emit('input_dir', {
-            room: currentRoom,
-            player_id: myPlayers[0].id,
-            dir: dirMap[dir]
-          });
+        // В режиме "Магический шутер" проверяем эффект невосприимчивости
+        if (gameMode === 'magic-shooter' && specialEffectTypes[i] === SPECIAL_EFFECTS.INVULNERABILITY && i === checkingPlayer) {
+          // Невосприимчивый игрок может проходить через других змеек
+          if (i !== checkingPlayer) {
+            continue;
+          }
         }
-      });
-    });
 
-    // ===== УПРАВЛЕНИЕ СВАЙПАМИ ДЛЯ ВСЕХ УСТРОЙСТВ =====
-    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
-    canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
-    canvas.addEventListener('touchcancel', handleTouchEnd, { passive: false });
-
-    function handleTouchStart(e) {
-      if (gameScreen.style.display !== 'flex' || strokeActive) return;
-
-      if (e.touches.length === 1) {
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-        touchStartTime = Date.now();
-        isSwiping = true;
-        e.preventDefault();
+        if (seg.x === x && seg.y === y) return true;
       }
     }
+    return false;
+  }
 
-    function handleTouchMove(e) {
-      if (!isSwiping || strokeActive) return;
-
-      e.preventDefault();
-
-      if (e.touches.length === 1) {
-        const currentX = e.touches[0].clientX;
-        const currentY = e.touches[0].clientY;
-
-        // Показать визуальную подсказку направления
-        const dx = currentX - touchStartX;
-        const dy = currentY - touchStartY;
-
-        if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
-          showSwipeIndicator(dx, dy);
+  // ✅ УЛУЧШЕННАЯ ФУНКЦИЯ: оценка свободного пространства в направлении
+  function getFreeSpace(head, dir, maxSteps = 5) {
+    let pos = { x: head.x, y: head.y };
+    let free = 0;
+    let turns = 0; // Счётчик возможных поворотов
+    for (let i = 0; i < maxSteps; i++) {
+      pos = {
+        x: (pos.x + dir.x + tileCountX) % tileCountX,
+        y: (pos.y + dir.y + tileCountY) % tileCountY
+      };
+      if (isOccupied(pos.x, pos.y)) break;
+      free++;
+      // Дополнительно оцениваем повороты после 2 шагов
+      if (i >= 2) {
+        const nextDirs = [
+          { x: 0, y: -1 },
+          { x: 0, y: 1 },
+          { x: -1, y: 0 },
+          { x: 1, y: 0 }
+        ].filter(d => !(d.x === -dir.x && d.y === -dir.y));
+        for (let nextDir of nextDirs) {
+          const nx = (pos.x + nextDir.x + tileCountX) % tileCountX;
+          const ny = (pos.y + nextDir.y + tileCountY) % tileCountY;
+          if (!isOccupied(nx, ny)) turns++;
         }
       }
     }
+    return { free, turns };
+  }
 
-    function handleTouchEnd(e) {
-      if (!isSwiping || strokeActive) {
-        isSwiping = false;
-        hideSwipeIndicator();
+  // ✅ ПЕРЕПИСАННАЯ ФУНКЦИЯ: получение безопасных ходов с учётом будущих поворотов
+  function getSafeMoves(head, currentDir, isHunterActive = false) {
+    const allDirs = [
+      { x: 0, y: -1 }, // вверх
+      { x: 0, y: 1 },  // вниз
+      { x: -1, y: 0 }, // влево
+      { x: 1, y: 0 }   // вправо
+    ];
+    // Исключаем противоположное направление
+    const candidates = allDirs.filter(dir =>
+      !(dir.x === -currentDir.x && dir.y === -currentDir.y)
+    );
+    const safe = [];
+    const risky = [];
+    for (let dir of candidates) {
+      const nx = (head.x + dir.x + tileCountX) % tileCountX;
+      const ny = (head.y + dir.y + tileCountY) % tileCountY;
+      if (isOccupied(nx, ny)) continue;
+      // Оцениваем пространство с возможными поворотами
+      const space = getFreeSpace({x: nx, y: ny}, dir, 4);
+      const minSpace = isHunterActive ? 1 : 2;
+      if (space.free >= minSpace && space.turns > 0) {
+        safe.push({ dir, space });
+      } else {
+        risky.push({ dir, space });
+      }
+    }
+    return { safe, risky };
+  }
+
+  function manhattan(a, b) {
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+  }
+
+  // ✅ ПОЛНОСТЬЮ ПЕРЕПИСАННАЯ ФУНКЦИЯ: боты двигаются извилисто, с поворотами
+  function botThink(index) {
+    if (!gameRunning || snakes[index] === null) return;
+    const head = snakes[index][0];
+    const currentDir = directions[index];
+    const strategy = botStrategies[index];
+    const isHunter = strategy === BOT_STRATEGIES.HUNTER;
+    const isHunterActive = isHunter && snakes[index].length >= 80;
+    const reaction = isHunterActive ? 95 : (isHunter ? 100 : 80);
+
+    // В режиме "Магический шутер" боты могут стрелять
+    if (gameMode === 'magic-shooter' && specialEffectTypes[index] === SPECIAL_EFFECTS.WEAPON && Math.random() < 0.25) {
+      // Проверяем, есть ли впереди другая змейка
+      const dir = directions[index];
+      let distance = 1;
+      let targetFound = false;
+
+      while (distance <= 6 && !targetFound) { // Проверяем на расстоянии до 6 клеток
+        const checkX = (head.x + dir.x * distance + tileCountX) % tileCountX;
+        const checkY = (head.y + dir.y * distance + tileCountY) % tileCountY;
+
+        for (let i = 0; i < totalPlayers; i++) {
+          if (i === index || snakes[i] === null) continue;
+
+          for (let seg of snakes[i]) {
+            if (seg.x === checkX && seg.y === checkY) {
+              targetFound = true;
+              break;
+            }
+          }
+        }
+
+        if (targetFound) {
+          shootBullet(index);
+        }
+
+        distance++;
+      }
+    }
+
+    // Инициализация памяти для истории направлений
+    if (!botMemory[index]) {
+      botMemory[index] = {
+        lastTurn: 0,
+        turnCooldown: 0,
+        lastDirection: currentDir
+      };
+    }
+    const memory = botMemory[index];
+    memory.turnCooldown = Math.max(0, memory.turnCooldown - 1);
+    // Получаем безопасные ходы с учётом будущих поворотов
+    const { safe, risky } = getSafeMoves(head, currentDir, isHunterActive);
+    const candidates = safe.length > 0 ? safe : risky;
+    if (candidates.length === 0) return;
+    // ===== 1. Hunter >= 80: Охотник включён =====
+    if (isHunterActive) {
+      let target = null;
+      let minDist = Infinity;
+      // Сначала ищем игроков
+      for (let i = 0; i < humanCount; i++) {
+        if (snakes[i] && snakes[i][0]) {
+          const dist = manhattan(head, snakes[i][0]);
+          if (dist < minDist) {
+            minDist = dist;
+            target = snakes[i][0];
+          }
+        }
+      }
+      // Если игроков нет, охотимся на ботов с 50% шансом
+      if (!target && Math.random() < 0.5) {
+        for (let i = humanCount; i < totalPlayers; i++) {
+          if (i !== index && snakes[i] && snakes[i][0]) {
+            const dist = manhattan(head, snakes[i][0]);
+            if (dist < minDist) {
+              minDist = dist;
+              target = snakes[i][0];
+            }
+          }
+        }
+      }
+      // Двигаемся к цели с возможными поворотами
+      if (target) {
+        let bestOption = candidates[0];
+        let bestScore = -Infinity;
+        for (const option of candidates) {
+          const nextPos = {
+            x: (head.x + option.dir.x + tileCountX) % tileCountX,
+            y: (head.y + option.dir.y + tileCountY) % tileCountY
+          };
+          // Основной критерий: расстояние до цели
+          const distScore = -manhattan(nextPos, target) * 1.5;
+          // Критерий: свободное пространство и возможность поворотов
+          const spaceScore = option.space.free * 0.7 + option.space.turns * 0.8;
+          // Критерий: разнообразие движения (меньше повторений)
+          const diversityScore = (option.dir.x !== memory.lastDirection.x ||
+                                 option.dir.y !== memory.lastDirection.y) ? 5 : 0;
+          // Общий балл
+          const score = distScore + spaceScore + diversityScore;
+          if (score > bestScore) {
+            bestScore = score;
+            bestOption = option;
+          }
+        }
+        // Обновляем память
+        memory.lastDirection = bestOption.dir;
+        directions[index] = bestOption.dir;
         return;
       }
+      // Если нет цели — движемся с максимальным разнообразием
+      let bestOption = candidates[0];
+      let bestScore = -Infinity;
+      for (const option of candidates) {
+        const diversityScore = (option.dir.x !== memory.lastDirection.x ||
+                               option.dir.y !== memory.lastDirection.y) ? 10 : 0;
+        const spaceScore = option.space.free * 0.8 + option.space.turns;
+        const score = spaceScore + diversityScore;
+        if (score > bestScore) {
+          bestScore = score;
+          bestOption = option;
+        }
+      }
+      memory.lastDirection = bestOption.dir;
+      directions[index] = bestOption.dir;
+      return;
+    }
+    // ===== 2. Остальные боты =====
+    let targetFood = null;
+    if (foods.length > 0) {
+      targetFood = foods.reduce((a, b) => manhattan(head, a) < manhattan(head, b) ? a : b);
+    }
+    // Если еда рядом (расстояние 1), берём её
+    if (targetFood && manhattan(head, targetFood) === 1) {
+      const dx = targetFood.x - head.x;
+      const dy = targetFood.y - head.y;
+      const immediateDir = { x: dx, y: dy };
+      const immediateOption = candidates.find(opt =>
+        opt.dir.x === immediateDir.x && opt.dir.y === immediateDir.y
+      );
+      if (immediateOption) {
+        memory.lastDirection = immediateOption.dir;
+        directions[index] = immediateOption.dir;
+        return;
+      }
+    }
+    // ===== БАЛАНС ИЗ ВАШЕГО ЗАПРОСА =====
+    const isHunterInactive = isHunter && !isHunterActive;
+    const isAggressive = strategy === BOT_STRATEGIES.AGGRESSIVE;
+    // Hunter < 80 и агрессивные боты идут прямо к еде
+    const useGreedyFood = isHunterInactive || isAggressive;
+    if (targetFood && useGreedyFood) {
+      let bestOption = candidates[0];
+      let bestScore = -Infinity;
+      for (const option of candidates) {
+        const nextPos = {
+          x: (head.x + option.dir.x + tileCountX) % tileCountX,
+          y: (head.y + option.dir.y + tileCountY) % tileCountY
+        };
+        const distScore = -manhattan(nextPos, targetFood) * 2;
+        const spaceScore = option.space.free * 0.5;
+        const diversityScore = (option.dir.x !== memory.lastDirection.x ||
+                               option.dir.y !== memory.lastDirection.y) ? 3 : 0;
+        const score = distScore + spaceScore + diversityScore;
+        if (score > bestScore) {
+          bestScore = score;
+          bestOption = option;
+        }
+      }
+      memory.lastDirection = bestOption.dir;
+      directions[index] = bestOption.dir;
+    }
+    else if (targetFood) {
+      // Остальные боты: оцениваем и расстояние до еды, и свободное пространство
+      let bestOption = candidates[0];
+      let bestScore = -Infinity;
+      for (const option of candidates) {
+        const nextPos = {
+          x: (head.x + option.dir.x + tileCountX) % tileCountX,
+          y: (head.y + option.dir.y + tileCountY) % tileCountY
+        };
+        const foodScore = -manhattan(nextPos, targetFood) * 0.8;
+        const spaceScore = option.space.free * 1.2 + option.space.turns * 0.7;
+        const diversityScore = (option.dir.x !== memory.lastDirection.x ||
+                               option.dir.y !== memory.lastDirection.y) ? 5 : 0;
+        const score = foodScore + spaceScore + diversityScore;
+        if (score > bestScore) {
+          bestScore = score;
+          bestOption = option;
+        }
+      }
+      memory.lastDirection = bestOption.dir;
+      directions[index] = bestOption.dir;
+    }
+    else {
+      // ✅ ГЛАВНОЕ ИЗМЕНЕНИЕ: при отсутствии еды боты охотятся на игроков или двигаются извилисто
+      const isHunting = !isHunterInactive && Math.random() < 0.8; // 80% шанс охоты для обычных ботов
+      if (isHunting) {
+        let targetPlayer = null;
+        let minDist = Infinity;
+        for (let i = 0; i < humanCount; i++) {
+          if (snakes[i] && snakes[i][0]) {
+            const dist = manhattan(head, snakes[i][0]);
+            if (dist < minDist) {
+              minDist = dist;
+              targetPlayer = snakes[i][0];
+            }
+          }
+        }
+        if (targetPlayer) {
+          let bestOption = candidates[0];
+          let bestScore = -Infinity;
+          for (const option of candidates) {
+            const nextPos = {
+              x: (head.x + option.dir.x + tileCountX) % tileCountX,
+              y: (head.y + option.dir.y + tileCountY) % tileCountY
+            };
+            const distScore = -manhattan(nextPos, targetPlayer) * 1.2;
+            const spaceScore = option.space.free * 0.6 + option.space.turns * 0.9;
+            const diversityScore = (option.dir.x !== memory.lastDirection.x ||
+                                   option.dir.y !== memory.lastDirection.y) ? 7 : 0;
+            const score = distScore + spaceScore + diversityScore;
+            if (score > bestScore) {
+              bestScore = score;
+              bestOption = option;
+            }
+          }
+          memory.lastDirection = bestOption.dir;
+          directions[index] = bestOption.dir;
+          return;
+        }
+      }
+      // Если не охотимся или игроков нет — двигаемся извилисто
+      let bestOption = candidates[0];
+      let bestScore = -Infinity;
+      for (const option of candidates) {
+        // Шанс на смену направления зависит от реакции
+        const randomFactor = Math.random() * (reaction / 50);
+        const spaceScore = option.space.free * 0.9 + option.space.turns * 1.1;
+        const diversityScore = (option.dir.x !== memory.lastDirection.x ||
+                               option.dir.y !== memory.lastDirection.y) ? 8 : 0;
+        const score = spaceScore + diversityScore + randomFactor;
+        if (score > bestScore) {
+          bestScore = score;
+          bestOption = option;
+        }
+      }
+      memory.lastDirection = bestOption.dir;
+      directions[index] = bestOption.dir;
+    }
+    // ✅ ОТЛОЖЕННЫЙ ПОВОРОТ: иногда меняем направление даже если текущее хорошее
+    if (Math.random() < 0.15 && safe.length > 1 && memory.turnCooldown === 0) {
+      const otherOptions = candidates.filter(opt =>
+        !(opt.dir.x === currentDir.x && opt.dir.y === currentDir.y)
+      );
+      if (otherOptions.length > 0) {
+        const randomOption = otherOptions[Math.floor(Math.random() * otherOptions.length)];
+        memory.lastDirection = randomOption.dir;
+        memory.turnCooldown = 3; // Задержка перед следующим поворотом
+        directions[index] = randomOption.dir;
+      }
+    }
+  }
 
-      isSwiping = false;
-      hideSwipeIndicator();
+  // ===== ФУНКЦИЯ СИНХРОНИЗАЦИИ ОЧКОВ С ДЛИНОЙ ХВОСТА =====
+  function syncScoreWithSnakeLength() {
+    for (let i = 0; i < totalPlayers; i++) {
+      if (snakes[i] !== null) {
+        // Очки = (длина змейки - 1) * 10, так как голова не должна давать очков
+        // Но только если игрок жив (змейка существует)
+        scores[i] = (snakes[i].length - 1) * 10;
+      }
+      // Если игрок мертв, его очки сохраняются и не обнуляются
+    }
+  }
 
-      if (e.changedTouches.length === 0) return;
+  // --- ДВИЖОК ---
+  function generateFood() {
+    let newFood;
+    let overlapping;
+    do {
+      overlapping = false;
+      newFood = {
+        x: Math.floor(Math.random() * tileCountX),
+        y: Math.floor(Math.random() * tileCountY),
+        // Добавляем зачарованное яблоко в режиме "Магический шутер"
+        isSpecial: gameMode === 'magic-shooter' && Math.random() < 0.3 // 30% вероятность
+      };
+      if (isOccupied(newFood.x, newFood.y)) overlapping = true;
+      for (let f of foods) {
+        if (f.x === newFood.x && f.y === newFood.y) {
+          overlapping = true;
+          break;
+        }
+      }
+    } while (overlapping);
+    foods.push(newFood);
+  }
 
-      const touchEndX = e.changedTouches[0].clientX;
-      const touchEndY = e.changedTouches[0].clientY;
-      const touchDuration = Date.now() - touchStartTime;
+  function createParticles(x, y, color) {
+    const count = 12;
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
+      const speed = 1 + Math.random() * 3;
+      particles.push({
+        x: (x + 0.5) * gridSize,
+        y: (y + 0.5) * gridSize,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 25,
+        maxLife: 25,
+        color: color
+      });
+    }
+  }
 
-      // Минимальное расстояние и максимальная длительность для свайпа
-      const dx = touchEndX - touchStartX;
-      const dy = touchEndY - touchStartY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
+  function drawGrid() {
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x <= canvas.width; x += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, canvas.height);
+      ctx.stroke();
+    }
+    for (let y = 0; y <= canvas.height; y += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(canvas.width, y);
+      ctx.stroke();
+    }
+  }
 
-      // Настройки чувствительности
-      const MIN_DISTANCE = 50; // пикселей
-      const MAX_DURATION = 500; // миллисекунд
+  // ИЗМЕНЕНА ФУНКЦИЯ ОТРИСОВКИ ЗМЕИ ДЛЯ ПОДДЕРЖКИ РЕЖИМОВ ПРИЗРАКА
+  function drawSnake(snake, headColor, bodyColor, playerIndex) {
+    if (!snake) return;
 
-      if (distance > MIN_DISTANCE && touchDuration < MAX_DURATION && myPlayers.length > 0) {
-        let dir = {x: 0, y: 0};
+    // Проверяем, является ли игрок призраком
+    const isGhost = isPlayerGhost(playerIndex);
 
-        if (Math.abs(dx) > Math.abs(dy)) {
-          // Горизонтальный свайп
-          dir.x = dx > 0 ? 1 : -1;
+    for (let i = 0; i < snake.length; i++) {
+      const seg = snake[i];
+
+      // В режимах призрака не рисуем хвост (кроме режимов, где хвост невидим, но имеет хитбокс)
+      if (isGhost && i > 0) {
+        if (gameMode === 'half-ghost' || gameMode === 'family-ghost' ||
+            gameMode === 'full-ghost' || gameMode === 'all-ghosts') {
+          continue;
+        }
+      }
+
+      // Устанавливаем цвет в зависимости от режима
+      let color = i === 0 ? headColor : bodyColor;
+
+      // Эффекты для режима "Магический шутер"
+      if (gameMode === 'magic-shooter' && i === 0) {
+        if (specialEffectTypes[playerIndex] === SPECIAL_EFFECTS.WEAPON) {
+          // Эффект оружия - золотая голова
+          color = '#FFD700';
+        } else if (specialEffectTypes[playerIndex] === SPECIAL_EFFECTS.INVULNERABILITY) {
+          // Эффект неуязвимости - синяя голова с мерцанием
+          const pulse = 0.8 + 0.2 * Math.sin(Date.now() / 100);
+          color = `rgba(76, 201, 240, ${pulse})`;
+        } else if (specialEffectTypes[playerIndex] === SPECIAL_EFFECTS.DIARRHEA) {
+          // Эффект диареи - красная голова
+          color = '#FF6B6B';
+        }
+      }
+
+      if (isGhost && i === 0) {
+        // Полупрозрачная голова в режиме призрака
+        if (color.startsWith('hsl')) {
+          color = color.replace(')', ', 0.7)').replace('hsl', 'hsla');
         } else {
-          // Вертикальный свайп
-          dir.y = dy > 0 ? 1 : -1;
+          color = 'rgba(255, 255, 255, 0.7)'; // fallback
+        }
+      }
+
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.roundRect(
+        seg.x * gridSize + 1.5,
+        seg.y * gridSize + 1.5,
+        gridSize - 3,
+        gridSize - 3,
+        4
+      );
+
+      // Градиент для тела (кроме режима призрака)
+      if (i > 0 && !isGhost) {
+        const gradient = ctx.createLinearGradient(
+          seg.x * gridSize,
+          seg.y * gridSize,
+          (seg.x + 1) * gridSize,
+          (seg.y + 1) * gridSize
+        );
+        gradient.addColorStop(0, bodyColor);
+        gradient.addColorStop(1, headColor);
+        ctx.fillStyle = gradient;
+      }
+
+      ctx.fill();
+
+      // Глаза для головы (всегда рисуем, даже в режиме призрака)
+      if (i === 0) {
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+
+        // Определяем позицию глаз в зависимости от направления
+        const eyeOffset = 5;
+        let eyeX1, eyeY1, eyeX2, eyeY2;
+
+        if (directions[playerIndex].x === 1) { // Право
+          eyeX1 = seg.x * gridSize + gridSize - eyeOffset;
+          eyeY1 = seg.y * gridSize + eyeOffset;
+          eyeX2 = seg.x * gridSize + gridSize - eyeOffset;
+          eyeY2 = seg.y * gridSize + gridSize - eyeOffset;
+        } else if (directions[playerIndex].x === -1) { // Лево
+          eyeX1 = seg.x * gridSize + eyeOffset;
+          eyeY1 = seg.y * gridSize + eyeOffset;
+          eyeX2 = seg.x * gridSize + eyeOffset;
+          eyeY2 = seg.y * gridSize + gridSize - eyeOffset;
+        } else if (directions[playerIndex].y === -1) { // Вверх
+          eyeX1 = seg.x * gridSize + eyeOffset;
+          eyeY1 = seg.y * gridSize + eyeOffset;
+          eyeX2 = seg.x * gridSize + gridSize - eyeOffset;
+          eyeY2 = seg.y * gridSize + eyeOffset;
+        } else { // Вниз
+          eyeX1 = seg.x * gridSize + eyeOffset;
+          eyeY1 = seg.y * gridSize + gridSize - eyeOffset;
+          eyeX2 = seg.x * gridSize + gridSize - eyeOffset;
+          eyeY2 = seg.y * gridSize + gridSize - eyeOffset;
         }
 
-        // Отправить команду для первого игрока
-        socket.emit('input_dir', {
-          room: currentRoom,
-          player_id: myPlayers[0].id,
-          dir: dir
-        });
+        // Рисуем глаза
+        ctx.arc(eyeX1, eyeY1, 2, 0, Math.PI * 2);
+        ctx.arc(eyeX2, eyeY2, 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Зрачки для большей выразительности
+        ctx.fillStyle = 'black';
+        ctx.beginPath();
+        ctx.arc(eyeX1, eyeY1, 0.8, 0, Math.PI * 2);
+        ctx.arc(eyeX2, eyeY2, 0.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+
+  function drawFood() {
+    for (let f of foods) {
+      const isSpecial = f.isSpecial;
+      const pulseSize = isSpecial ? 6 + Math.sin(Date.now() / 150) * 3 : 4 + Math.sin(Date.now() / 200) * 2;
+
+      // Рисуем основной слой
+      ctx.fillStyle = isSpecial ? '#9c27b0' : '#FF5252';  // Фиолетовый для зачарованного
+      ctx.beginPath();
+      ctx.arc(
+        (f.x + 0.5) * gridSize,
+        (f.y + 0.5) * gridSize,
+        pulseSize,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+
+      // Дополнительные эффекты для зачарованного яблока
+      if (isSpecial) {
+        // Сияние вокруг зачарованного яблока
+        const glowSize = pulseSize * 1.5;
+        const gradient = ctx.createRadialGradient(
+          (f.x + 0.5) * gridSize, (f.y + 0.5) * gridSize, pulseSize,
+          (f.x + 0.5) * gridSize, (f.y + 0.5) * gridSize, glowSize
+        );
+        gradient.addColorStop(0, 'rgba(156, 39, 176, 0.8)');
+        gradient.addColorStop(1, 'rgba(156, 39, 176, 0)');
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(
+          (f.x + 0.5) * gridSize,
+          (f.y + 0.5) * gridSize,
+          glowSize,
+          0,
+          Math.PI * 2
+        );
+        ctx.fill();
+
+        // Символ магии
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.font = '14px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('★', (f.x + 0.5) * gridSize, (f.y + 0.5) * gridSize);
+      } else {
+        // Блик на обычном яблоке
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.beginPath();
+        ctx.arc(
+          (f.x + 0.5) * gridSize - 1,
+          (f.y + 0.5) * gridSize - 1,
+          1.5,
+          0,
+          Math.PI * 2
+        );
+        ctx.fill();
+      }
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawGrid();
+    // Рисуем частицы
+    for (let p of particles) {
+      const alpha = p.life / p.maxLife;
+      // Исправленная строка для корректной обработки цветов
+      let color;
+      if (p.color.includes('hsla')) {
+        // Заменяем последнее число перед закрывающей скобкой (альфа-канал)
+        color = p.color.replace(/[\d.]+\)$/, `${alpha})`);
+      } else if (p.color.includes('hsl')) {
+        // Если это hsl без альфа-канала, добавляем его
+        color = p.color.replace(')', `, ${alpha})`).replace('hsl', 'hsla');
+      } else {
+        // Для других форматов цветов
+        color = p.color.replace(')', `, ${alpha})`).replace('rgb', 'rgba');
+      }
+      // Градиент для частиц
+      const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 3);
+      gradient.addColorStop(0, color);
+      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    for (let i = 0; i < totalPlayers; i++) {
+      if (snakes[i] !== null) {
+        // Передаем playerIndex в drawSnake
+        drawSnake(snakes[i], colors[i].head, colors[i].body, i);
+      }
+    }
+    drawFood();
+
+    // Рисуем пули в режиме "Магический шутер"
+    if (gameMode === 'magic-shooter') {
+      drawBullets();
+    }
+  }
+
+  // === РЕЖИМ "МАГИЧЕСКИЙ ШУТЕР" ===
+
+  function shootBullet(playerIndex) {
+    if (!gameRunning || specialEffectTypes[playerIndex] !== SPECIAL_EFFECTS.WEAPON) return;
+
+    const head = snakes[playerIndex][0];
+    const direction = directions[playerIndex];
+
+    // Создаем пулю, которая начинает движение от головы змейки
+    const bullet = {
+      x: head.x,
+      y: head.y,
+      vx: direction.x * 3, // Утроенная скорость
+      vy: direction.y * 3,
+      owner: playerIndex,
+      life: 20, // Максимальное расстояние
+      framesAlive: 0 // Счетчик кадров существования
+    };
+
+    bullets.push(bullet);
+
+    // Визуальная индикация выстрела
+    createParticles(head.x, head.y, '#FFD700');
+
+    // Звуковая индикация (вибрация)
+    if (navigator.vibrate) {
+      navigator.vibrate(50);
+    }
+  }
+
+  function updateBullets() {
+    for (let i = bullets.length - 1; i >= 0; i--) {
+      const bullet = bullets[i];
+
+      // Движение пули БЕЗ телепортации через стенки
+      bullet.x += bullet.vx;
+      bullet.y += bullet.vy;
+
+      bullet.life--;
+      bullet.framesAlive++;
+
+      // Проверка выхода пули за границы поля
+      if (bullet.x < 0 || bullet.x >= tileCountX || bullet.y < 0 || bullet.y >= tileCountY) {
+        // Пуля вышла за пределы поля, удаляем ее
+        bullets.splice(i, 1);
+        continue;
       }
 
+      // Проверка попадания в змейку
+      for (let j = 0; j < totalPlayers; j++) {
+        if (snakes[j] === null) continue;
+
+        // Проверяем столкновение с головой змейки
+        for (let k = 0; k < snakes[j].length; k++) {
+          const seg = snakes[j][k];
+          if (seg.x === Math.floor(bullet.x) && seg.y === Math.floor(bullet.y)) {
+            // Попадание! Укорачиваем змейку
+            if (snakes[j].length > 1 && bullet.owner !== j) {
+              snakes[j].pop(); // Удаляем последнюю клетку
+              // Очки синхронизируются позже в функции syncScoreWithSnakeLength()
+              createParticles(seg.x, seg.y, colors[bullet.owner].particle);
+            }
+
+            // Если пуля попала в владельца, и она летела достаточно долго
+            if (bullet.owner === j && bullet.framesAlive > 5 && snakes[j].length > 1) {
+              snakes[j].pop(); // Удаляем последнюю клетку
+              // Очки синхронизируются позже в функции syncScoreWithSnakeLength()
+            }
+
+            // Удаляем пулю
+            bullets.splice(i, 1);
+            break;
+          }
+        }
+      }
+
+      // Удаляем пулю, если она прошла максимальное расстояние
+      if (bullet.life <= 0) {
+        bullets.splice(i, 1);
+      }
+    }
+  }
+
+  function drawBullets() {
+    for (let bullet of bullets) {
+      ctx.fillStyle = '#FFD700'; // Золотой цвет для пули
+      ctx.beginPath();
+      ctx.arc(
+        (bullet.x + 0.5) * gridSize,
+        (bullet.y + 0.5) * gridSize,
+        4,
+        0,
+        Math.PI * 2
+      );
+
+      // Добавляем след
+      const trailGradient = ctx.createRadialGradient(
+        (bullet.x + 0.5) * gridSize, (bullet.y + 0.5) * gridSize, 2,
+        (bullet.x + 0.5) * gridSize, (bullet.y + 0.5) * gridSize, 8
+      );
+      trailGradient.addColorStop(0, 'rgba(255, 215, 0, 0.8)');
+      trailGradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
+
+      ctx.fillStyle = trailGradient;
+      ctx.arc(
+        (bullet.x + 0.5) * gridSize,
+        (bullet.y + 0.5) * gridSize,
+        8,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+    }
+  }
+
+  function applySpecialEffect(playerIndex) {
+    if (!gameRunning || gameMode !== 'magic-shooter') return;
+
+    // Определяем тип эффекта
+    const random = Math.random();
+    let effectType;
+
+    if (random < 0.4) {
+      effectType = SPECIAL_EFFECTS.WEAPON;
+    } else if (random < 0.8) {
+      effectType = SPECIAL_EFFECTS.INVULNERABILITY;
+    } else {
+      effectType = SPECIAL_EFFECTS.DIARRHEA;
+    }
+
+    // Устанавливаем эффект
+    specialEffectTypes[playerIndex] = effectType;
+    specialFoodTimers[playerIndex] = Date.now() + 10000; // 10 секунд
+
+    // Создаем визуальную индикацию
+    const effectColors = {
+      [SPECIAL_EFFECTS.WEAPON]: '#FFD700',
+      [SPECIAL_EFFECTS.INVULNERABILITY]: '#4CC9F0',
+      [SPECIAL_EFFECTS.DIARRHEA]: '#FF6B6B'
+    };
+
+    createParticles(snakes[playerIndex][0].x, snakes[playerIndex][0].y, effectColors[effectType]);
+
+    // Если эффект "Диарея", начинаем таймер потери клеток
+    if (effectType === SPECIAL_EFFECTS.DIARRHEA) {
+      if (diarrheaTimers[playerIndex]) {
+        clearInterval(diarrheaTimers[playerIndex]);
+      }
+
+      diarrheaTimers[playerIndex] = setInterval(() => {
+        if (snakes[playerIndex] && snakes[playerIndex].length > 1 &&
+            specialEffectTypes[playerIndex] === SPECIAL_EFFECTS.DIARRHEA) {
+          const tail = snakes[playerIndex][snakes[playerIndex].length - 1];
+          snakes[playerIndex].pop(); // Удаляем последнюю клетку
+          // Очки синхронизируются позже в функции syncScoreWithSnakeLength()
+          createParticles(tail.x, tail.y, '#FF6B6B');
+        }
+      }, 5000); // Каждые 5 секунд
+    }
+
+    // Показываем индикатор эффекта
+    showEffectIndicator(playerIndex, effectType);
+  }
+
+  function showEffectIndicator(playerIndex, effectType) {
+    let effectNames = {
+      [SPECIAL_EFFECTS.WEAPON]: "Оружие",
+      [SPECIAL_EFFECTS.INVULNERABILITY]: "Неуязвимость",
+      [SPECIAL_EFFECTS.DIARRHEA]: "Диарея"
+    };
+
+    let icons = {
+      [SPECIAL_EFFECTS.WEAPON]: "🔫",
+      [SPECIAL_EFFECTS.INVULNERABILITY]: "🛡️",
+      [SPECIAL_EFFECTS.DIARRHEA]: "💧"
+    };
+
+    const existingIndicator = document.querySelector(`.effect-indicator[data-player="${playerIndex}"]`);
+    if (existingIndicator) {
+      existingIndicator.remove();
+    }
+
+    let effectIndicator = document.createElement('div');
+    effectIndicator.className = 'effect-indicator';
+    effectIndicator.dataset.player = playerIndex;
+    effectIndicator.innerHTML = `
+      <span class="effect-icon">${icons[effectType]}</span>
+      <span>${effectNames[effectType]} для ${playerTypes[playerIndex] === 'bot' ? 'Бота' : 'Игрока'} ${playerIndex + 1}</span>
+      <span class="effect-timer">10 сек</span>
+    `;
+    effectIndicator.style.position = 'absolute';
+    effectIndicator.style.bottom = '20px';
+    effectIndicator.style.left = '50%';
+    effectIndicator.style.transform = 'translateX(-50%)';
+    effectIndicator.style.background = 'rgba(30, 41, 59, 0.9)';
+    effectIndicator.style.padding = '8px 16px';
+    effectIndicator.style.borderRadius = '12px';
+    effectIndicator.style.border = '1px solid rgba(255, 255, 255, 0.1)';
+    effectIndicator.style.fontSize = '14px';
+    effectIndicator.style.zIndex = '5';
+    effectIndicator.style.display = 'flex';
+    effectIndicator.style.gap = '10px';
+    effectIndicator.style.alignItems = 'center';
+
+    document.body.appendChild(effectIndicator);
+
+    // Обновляем таймер
+    let remainingTime = 10;
+    const timerInterval = setInterval(() => {
+      remainingTime--;
+      const timerElement = effectIndicator.querySelector('.effect-timer');
+
+      if (timerElement) {
+        timerElement.textContent = `${remainingTime} сек`;
+      }
+
+      if (remainingTime <= 0 || specialEffectTypes[playerIndex] !== effectType) {
+        clearInterval(timerInterval);
+        if (effectIndicator.parentNode) {
+          effectIndicator.parentNode.removeChild(effectIndicator);
+        }
+      }
+    }, 1000);
+
+    // Удаляем индикатор через 10 секунд
+    setTimeout(() => {
+      if (effectIndicator.parentNode) {
+        effectIndicator.parentNode.removeChild(effectIndicator);
+      }
+      clearInterval(timerInterval);
+    }, 10000);
+  }
+
+  function checkInvulnerabilityEnd(playerIndex) {
+    if (specialEffectTypes[playerIndex] !== SPECIAL_EFFECTS.INVULNERABILITY) return;
+
+    const head = snakes[playerIndex][0];
+
+    // Проверяем, есть ли столкновение с другими змейками или с собой
+    if (isOccupied(head.x, head.y, playerIndex)) {
+      // Если есть столкновение, обрезаем змейку до первого пересечения
+      let collisionIndex = -1;
+      for (let i = 1; i < snakes[playerIndex].length; i++) {
+        const seg = snakes[playerIndex][i];
+        if (isOccupied(seg.x, seg.y, playerIndex)) {
+          collisionIndex = i;
+          break;
+        }
+      }
+
+      if (collisionIndex > 0) {
+        // Обрезаем змейку
+        const removedSegments = snakes[playerIndex].splice(0, collisionIndex);
+        // Очки синхронизируются позже в функции syncScoreWithSnakeLength()
+
+        // Добавляем отрезанные сегменты как яблоки
+        for (let seg of removedSegments) {
+          foods.push({ x: seg.x, y: seg.y });
+        }
+
+        createExplosion(snakes[playerIndex][0].x, snakes[playerIndex][0].y, colors[playerIndex].particle);
+      }
+    }
+  }
+
+  function update() {
+    if (!gameRunning) return;
+
+    // Обновляем состояния эффектов для режима "Магический шутер"
+    if (gameMode === 'magic-shooter') {
+      const now = Date.now();
+
+      for (let i = 0; i < totalPlayers; i++) {
+        if (specialFoodTimers[i] && now >= specialFoodTimers[i]) {
+          // Проверяем окончание эффекта неуязвимости
+          if (specialEffectTypes[i] === SPECIAL_EFFECTS.INVULNERABILITY) {
+            checkInvulnerabilityEnd(i);
+          }
+
+          // Очищаем таймер диареи
+          if (specialEffectTypes[i] === SPECIAL_EFFECTS.DIARRHEA && diarrheaTimers[i]) {
+            clearInterval(diarrheaTimers[i]);
+            diarrheaTimers[i] = null;
+          }
+
+          // Сбрасываем эффект
+          specialEffectTypes[i] = null;
+          specialFoodTimers[i] = null;
+        }
+      }
+
+      // Обновляем пули
+      updateBullets();
+    }
+
+    // Обновляем режимы призраков
+    if (gameMode === 'half-ghost' || gameMode === 'family-ghost') {
+      manageGhostMode();
+    }
+
+    for (let i = 0; i < totalPlayers; i++) {
+      if (playerTypes[i] === 'bot' && snakes[i] !== null) {
+        botThink(i);
+      }
+    }
+
+    for (let i = 0; i < totalPlayers; i++) {
+      if (snakes[i] === null) continue;
+      const head = {
+        x: (snakes[i][0].x + directions[i].x + tileCountX) % tileCountX,
+        y: (snakes[i][0].y + directions[i].y + tileCountY) % tileCountY
+      };
+
+      // Модифицируем проверку столкновений для режима магического шутера
+      let shouldKill = true;
+      if (gameMode === 'magic-shooter' && specialEffectTypes[i] === SPECIAL_EFFECTS.INVULNERABILITY) {
+        // Проверяем, сталкивается ли голова с другими змейками
+        for (let j = 0; j < totalPlayers; j++) {
+          if (j === i || snakes[j] === null) continue;
+
+          for (let seg of snakes[j]) {
+            if (seg.x === head.x && seg.y === head.y) {
+              // Если сталкивается с другой змейкой, умирает другая змейка
+              createExplosion(seg.x, seg.y, colors[i].particle);
+              killPlayer(j);
+              shouldKill = false;
+              break;
+            }
+          }
+        }
+
+        // Проверяем столкновение с самим собой (если голова врезается в собственное тело)
+        for (let k = 1; k < snakes[i].length; k++) {
+          const seg = snakes[i][k];
+          if (seg.x === head.x && seg.y === head.y) {
+            shouldKill = true;
+            break;
+          }
+        }
+      } else {
+        // Обычная проверка столкновений
+        if (isOccupied(head.x, head.y, i)) {
+          createExplosion(head.x, head.y, colors[i].particle);
+          killPlayer(i);
+          continue;
+        }
+      }
+
+      if (shouldKill && isOccupied(head.x, head.y, i)) {
+        createExplosion(head.x, head.y, colors[i].particle);
+        killPlayer(i);
+        continue;
+      }
+
+      snakes[i].unshift(head);
+      let ate = false;
+      const isHunter = botStrategies[i] === BOT_STRATEGIES.HUNTER && snakes[i].length >= 80;
+      if (!isHunter) {
+        for (let j = 0; j < foods.length; j++) {
+          if (foods[j].x === head.x && foods[j].y === head.y) {
+            if (gameMode === 'magic-shooter' && foods[j].isSpecial) {
+              // Съели зачарованное яблоко
+              applySpecialEffect(i);
+            } else {
+              // Съели обычное яблоко
+              // Очки синхронизируются позже в функции syncScoreWithSnakeLength()
+            }
+
+            createParticles(foods[j].x, foods[j].y, colors[i].particle);
+            foods.splice(j, 1);
+            ate = true;
+            break;
+          }
+        }
+      }
+      if (!ate) snakes[i].pop();
+    }
+
+    // ===== СИНХРОНИЗАЦИЯ ОЧКОВ ПОСЛЕ ВСЕХ ИЗМЕНЕНИЙ =====
+    syncScoreWithSnakeLength();
+    updateScoreDisplay();
+
+    let aliveHumans = 0;
+    let aliveBots = 0;
+    for (let i = 0; i < totalPlayers; i++) {
+      if (snakes[i] !== null) {
+        if (playerTypes[i] === 'human') aliveHumans++;
+        else aliveBots++;
+      }
+    }
+    const aliveTotal = aliveHumans + aliveBots;
+    if (aliveTotal === 0 || (totalPlayers > 1 && aliveTotal === 1) || (aliveHumans === 0 && aliveBots > 0)) {
+      endGame();
+      return;
+    }
+    particles = particles.filter(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life--;
+      return p.life > 0;
+    });
+  }
+
+  function createExplosion(x, y, color) {
+    const count = 25;
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.PI * 2 * i) / count + Math.random() * 0.3;
+      const speed = 2 + Math.random() * 5;
+      particles.push({
+        x: (x + 0.5) * gridSize,
+        y: (y + 0.5) * gridSize,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 30,
+        maxLife: 30,
+        color: color
+      });
+    }
+  }
+
+  function updateScoreDisplay() {
+    scoresDiv.innerHTML = '';
+    legendDiv.innerHTML = '';
+    for (let i = 0; i < totalPlayers; i++) {
+      // Показываем очки даже для умерших игроков
+      if (scores[i] > 0 || (playerTypes[i] === 'human' && i < humanCount)) {
+        const name = playerTypes[i] === 'bot' ? `Бот ${i - humanCount + 1}` : `Игрок ${i + 1}`;
+        const scoreEl = document.createElement('div');
+        // Добавляем индикатор цвета для игрока
+        const indicator = document.createElement('span');
+        indicator.className = 'player-indicator';
+        indicator.style.backgroundColor = colors[i].head;
+
+        // Добавляем индикатор призрака, если игрок находится в режиме призрака
+        let ghostIndicator = '';
+        if (isPlayerGhost(i)) {
+          ghostIndicator = '<span class="ghost-indicator"></span>';
+        }
+
+        scoreEl.innerHTML = `${indicator.outerHTML} ${name}: <strong>${scores[i]}</strong>${ghostIndicator}`;
+
+        // Добавляем индикатор эффекта в режиме магического шутера
+        if (gameMode === 'magic-shooter' && specialEffectTypes[i] !== null) {
+          const effectIcon = document.createElement('span');
+          effectIcon.style.marginLeft = '5px';
+          effectIcon.style.fontSize = '16px';
+
+          switch (specialEffectTypes[i]) {
+            case SPECIAL_EFFECTS.WEAPON:
+              effectIcon.textContent = '🔫';
+              effectIcon.title = 'Оружие';
+              break;
+            case SPECIAL_EFFECTS.INVULNERABILITY:
+              effectIcon.textContent = '🛡️';
+              effectIcon.title = 'Неуязвимость';
+              break;
+            case SPECIAL_EFFECTS.DIARRHEA:
+              effectIcon.textContent = '💧';
+              effectIcon.title = 'Диарея';
+              break;
+          }
+
+          scoreEl.appendChild(effectIcon);
+        }
+
+        scoresDiv.appendChild(scoreEl);
+        const colorBox = document.createElement('div');
+        colorBox.className = 'legend-color';
+        colorBox.style.backgroundColor = colors[i].head;
+        const label = document.createElement('span');
+        label.textContent = name;
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+        item.appendChild(colorBox);
+        item.appendChild(label);
+        legendDiv.appendChild(item);
+      }
+    }
+  }
+
+  function killPlayer(index) {
+    if (snakes[index] === null) return;
+    for (let seg of snakes[index]) {
+      foods.push({ x: seg.x, y: seg.y });
+    }
+    snakes[index] = null;
+    directions[index] = null;
+    botMemory[index] = null; // Очищаем память бота
+
+    // Очищаем эффекты для убитого игрока
+    if (gameMode === 'magic-shooter') {
+      specialEffectTypes[index] = null;
+      specialFoodTimers[index] = null;
+      if (diarrheaTimers[index]) {
+        clearInterval(diarrheaTimers[index]);
+        diarrheaTimers[index] = null;
+      }
+      // Очищаем таймеры автоматической стрельбы
+      if (autoShootTimers[index]) {
+        clearInterval(autoShootTimers[index]);
+        autoShootTimers[index] = null;
+      }
+    }
+
+    // ===== ВАЖНО: НЕ ОБНУЛЯЕМ ОЧКИ УМЕРШЕГО ИГРОКА =====
+    // Очки сохраняются для таблицы результатов
+
+    updateScoreDisplay();
+  }
+
+  function endGame() {
+    gameRunning = false;
+    clearInterval(foodTimer);
+
+    // Очищаем все эффекты для режима "Магический шутер"
+    if (gameMode === 'magic-shooter') {
+      for (let i = 0; i < MAX_PLAYERS; i++) {
+        if (diarrheaTimers[i]) {
+          clearInterval(diarrheaTimers[i]);
+          diarrheaTimers[i] = null;
+        }
+        if (autoShootTimers[i]) {
+          clearInterval(autoShootTimers[i]);
+          autoShootTimers[i] = null;
+        }
+      }
+    }
+
+    finalScoresDiv.innerHTML = '';
+    const entries = [];
+
+    // Собираем ВСЕХ игроков для таблицы результатов, включая умерших
+    for (let i = 0; i < totalPlayers; i++) {
+      // Собираем всех игроков, у которых были очки
+      if (scores[i] >= 0) {
+        const score = scores[i];
+        const name = playerTypes[i] === 'bot'
+          ? `Бот ${i - humanCount + 1}`
+          : `Игрок ${i + 1}`;
+        const color = colors[i].head;
+        const isAlive = snakes[i] !== null;
+        entries.push({ score, name, color, isAlive });
+      }
+    }
+
+    // Сортируем по очкам
+    entries.sort((a, b) => b.score - a.score);
+
+    entries.forEach(entry => {
+      const html = `<div style="color: ${entry.color}">${entry.name}${entry.isAlive ? ' (жив)' : ''}: ${entry.score}</div>`;
+      finalScoresDiv.innerHTML += html;
+    });
+
+    let aliveHumans = [];
+    let aliveBots = [];
+    for (let i = 0; i < totalPlayers; i++) {
+      if (snakes[i] !== null) {
+        if (playerTypes[i] === 'human') aliveHumans.push(`Игрок ${i + 1}`);
+        else aliveBots.push(`Бот ${i - humanCount + 1}`);
+      }
+    }
+
+    if (aliveHumans.length > 0) {
+      winnerDisplay.textContent = aliveHumans.length === 1 ? aliveHumans[0] : `Игроки: ${aliveHumans.join(', ')}`;
+    } else if (aliveBots.length > 0) {
+      winnerDisplay.textContent = 'Боты победили!';
+    } else {
+      winnerDisplay.textContent = 'Ничья';
+    }
+
+    setTimeout(() => gameOverScreen.classList.add('active'), 300);
+
+    // Звуковой эффект завершения игры (имитация через вибрацию на мобильных)
+    if (navigator.vibrate) {
+      navigator.vibrate([100, 50, 100]);
+    }
+  }
+
+  function canChangeDirection(currentDir, newDir) {
+    return !(currentDir.x === -newDir.x && currentDir.y === -newDir.y);
+  }
+
+  // === УПРАВЛЕНИЕ ===
+  function setupControls() {
+    document.removeEventListener('keydown', handleKeyDown);
+    canvas.removeEventListener('touchstart', handleTouchStart);
+    canvas.removeEventListener('touchend', handleTouchEnd);
+    document.addEventListener('keydown', handleKeyDown);
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+    canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+  }
+
+  function handleKeyDown(e) {
+    if (!gameRunning) return;
+
+    for (let i = 0; i < humanCount; i++) {
+      if (snakes[i] === null) continue;
+      const control = playerControls[i];
+      let dir = null;
+      if (control === 'keyboard1') {
+        if (e.key === 'ц' || e.key === 'Ц') dir = { x: 0, y: -1 };
+        else if (e.key === 'ы' || e.key === 'Ы') dir = { x: 0, y: 1 };
+        else if (e.key === 'ф' || e.key === 'Ф') dir = { x: -1, y: 0 };
+        else if (e.key === 'в' || e.key === 'В') dir = { x: 1, y: 0 };
+      } else if (control === 'keyboard2') {
+        if (e.key === 'н' || e.key === 'Н') dir = { x: 0, y: -1 };
+        else if (e.key === 'р' || e.key === 'Р') dir = { x: 0, y: 1 };
+        else if (e.key === 'п' || e.key === 'П') dir = { x: -1, y: 0 };
+        else if (e.key === 'о' || e.key === 'О') dir = { x: 1, y: 0 };
+      } else if (control === 'keyboard3') {
+        if (e.key === 'з' || e.key === 'З') dir = { x: 0, y: -1 };
+        else if (e.key === 'ж' || e.key === 'Ж') dir = { x: 0, y: 1 };
+        else if (e.key === 'д' || e.key === 'Д') dir = { x: -1, y: 0 };
+        else if (e.key === 'э' || e.key === 'Э') dir = { x: 1, y: 0 };
+      } else if (control === 'keyboard4') {
+        if (e.key === 'ArrowUp') dir = { x: 0, y: -1 };
+        else if (e.key === 'ArrowDown') dir = { x: 0, y: 1 };
+        else if (e.key === 'ArrowLeft') dir = { x: -1, y: 0 };
+        else if (e.key === 'ArrowRight') dir = { x: 1, y: 0 };
+      }
+      if (dir && canChangeDirection(directions[i], dir)) {
+        directions[i] = dir;
+        // Вибрация для тактильной обратной связи
+        if (navigator.vibrate && isMobile) {
+          navigator.vibrate(20);
+        }
+      }
+    }
+  }
+
+  let touchStart = {};
+  let currentTouchPlayer = -1;
+  let lastTap = 0; // Для двойного тапа
+
+  function handleTouchStart(e) {
+    if (!gameRunning) return;
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    const zoneX = x < rect.width / 2 ? 0 : 1;
+    const zoneY = y < rect.height / 2 ? 0 : 1;
+    const zone = zoneY * 2 + zoneX;
+    if (playerControls[zone] === 'swipe' && zone < humanCount) {
+      currentTouchPlayer = zone;
+      touchStart.x = x;
+      touchStart.y = y;
       e.preventDefault();
     }
+  }
 
-    function showSwipeIndicator(dx, dy) {
-      let arrow = '↑';
-      let rotation = 0;
+  function handleTouchEnd(e) {
+    if (!gameRunning || currentTouchPlayer === -1) return;
+    const touch = e.changedTouches[0];
+    const rect = canvas.getBoundingClientRect();
+    const endX = touch.clientX - rect.left;
+    const endY = touch.clientY - rect.top;
+    const dx = endX - touchStart.x;
+    const dy = endY - touchStart.y;
+    if (Math.abs(dx) < 30 && Math.abs(dy) < 30) {
+      currentTouchPlayer = -1;
+      return;
+    }
+    let dir = null;
+    if (Math.abs(dx) > Math.abs(dy)) {
+      dir = dx > 0 ? { x: 1, y: 0 } : { x: -1, y: 0 };
+    } else {
+      dir = dy > 0 ? { x: 0, y: 1 } : { x: 0, y: -1 };
+    }
+    if (dir && canChangeDirection(directions[currentTouchPlayer], dir)) {
+      directions[currentTouchPlayer] = dir;
+      // Вибрация для обратной связи
+      if (navigator.vibrate) {
+        navigator.vibrate(30);
+      }
+    }
+    currentTouchPlayer = -1;
+    e.preventDefault();
+  }
 
-      if (Math.abs(dx) > Math.abs(dy)) {
-        // Горизонтальный свайп
-        arrow = dx > 0 ? '→' : '←';
-        rotation = dx > 0 ? 0 : 180;
+  // ===== ФУНКЦИИ УПРАВЛЕНИЯ РЕЖИМАМИ "ПРИЗРАК" =====
+  function manageGhostMode() {
+    if (!gameRunning) return;
+
+    // Для режимов "Полупризрак" и "Семейка недопризраков" управляем временным эффектом
+    if (gameMode === 'half-ghost' || gameMode === 'family-ghost') {
+      const now = Date.now();
+
+      // Активация режима призрака с рандомным интервалом
+      if (now - lastGhostActivation > 10000 && Math.random() < 0.1) {
+        activateRandomGhostMode();
+        lastGhostActivation = now;
+      }
+
+      // Проверка таймеров окончания режима призрака
+      const maxPlayers = gameMode === 'family-ghost' ? totalPlayers : humanCount;
+
+      for (let i = 0; i < maxPlayers; i++) {
+        if (isGhostMode[i] && ghostTimers[i] && now >= ghostTimers[i]) {
+          deactivateGhostMode(i);
+        }
+      }
+    }
+  }
+
+  function activateRandomGhostMode() {
+    // Выбираем случайного живого игрока
+    const alivePlayers = [];
+    const maxPlayers = gameMode === 'family-ghost' ? totalPlayers : humanCount;
+
+    for (let i = 0; i < maxPlayers; i++) {
+      if (snakes[i] !== null) alivePlayers.push(i);
+    }
+
+    if (alivePlayers.length === 0) return;
+
+    const randomPlayer = alivePlayers[Math.floor(Math.random() * alivePlayers.length)];
+    activateGhostMode(randomPlayer);
+  }
+
+  function activateGhostMode(playerIndex) {
+    isGhostMode[playerIndex] = true;
+    ghostTimers[playerIndex] = Date.now() + 5000; // 5 секунд
+
+    // Визуальная индикация активации
+    if (snakes[playerIndex] && snakes[playerIndex][0]) {
+      createParticles(snakes[playerIndex][0].x, snakes[playerIndex][0].y, colors[playerIndex].particle);
+    }
+
+    // Звуковая индикация (вибрация)
+    if (navigator.vibrate) {
+      navigator.vibrate([50, 30, 50]);
+    }
+
+    updateScoreDisplay();
+  }
+
+  function deactivateGhostMode(playerIndex) {
+    isGhostMode[playerIndex] = false;
+    ghostTimers[playerIndex] = null;
+
+    // Визуальная индикация деактивации
+    if (snakes[playerIndex] && snakes[playerIndex][0]) {
+      createParticles(snakes[playerIndex][0].x, snakes[playerIndex][0].y, colors[playerIndex].particle);
+    }
+
+    updateScoreDisplay();
+  }
+
+  // === НОВЫЕ ФУНКЦИИ ДЛЯ ИНТЕРАКТИВНОГО ИНТЕРФЕЙСА ===
+
+  // Обработка нажатий на кнопки режимов
+  document.querySelectorAll('.mode-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      if (button.dataset.mode === 'ghost-main') return;
+
+      // Снимаем активность со всех кнопок
+      document.querySelectorAll('.mode-btn, .submode-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      // Активируем выбранную кнопку
+      button.classList.add('active');
+
+      // Обновляем выбранный режим
+      selectedMode = button.dataset.mode;
+
+      // Обновляем отображение выбранного режима
+      updateSelectedModeDisplay();
+    });
+
+    // Показ описания при наведении
+    button.addEventListener('mouseover', () => {
+      showDescription(button.dataset.mode);
+      document.querySelector('.mode-description').style.display = 'block';
+    });
+
+    button.addEventListener('mouseout', () => {
+      setTimeout(() => {
+        if (!document.querySelector('.ghost-submodes:hover') &&
+            !document.querySelector('.mode-description:hover')) {
+          document.querySelector('.mode-description').style.display = 'none';
+        }
+      }, 200);
+    });
+  });
+
+  // Обработка наведения на "Призрак" для показа подменю
+  document.querySelector('[data-mode="ghost-main"]').addEventListener('mouseover', () => {
+    showDescription('ghost-main');
+    document.querySelector('.mode-description').style.display = 'block';
+  });
+
+  // Обработка нажатий на подкнопки
+  document.querySelectorAll('.submode-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      // Снимаем активность со всех кнопок
+      document.querySelectorAll('.mode-btn, .submode-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      // Активируем выбранную подкнопку
+      button.classList.add('active');
+
+      // Обновляем выбранный режим
+      selectedMode = button.dataset.mode;
+
+      // Обновляем отображение выбранного режима
+      updateSelectedModeDisplay();
+    });
+
+    // Показ описания при наведении
+    button.addEventListener('mouseover', () => {
+      showDescription(button.dataset.mode);
+      document.querySelector('.mode-description').style.display = 'block';
+    });
+
+    button.addEventListener('mouseout', () => {
+      setTimeout(() => {
+        if (!document.querySelector('.ghost-submodes:hover') &&
+            !document.querySelector('.mode-description:hover')) {
+          document.querySelector('.mode-description').style.display = 'none';
+        }
+      }, 200);
+    });
+  });
+
+  // Показ описания при наведении на описание
+  const modeDescription = document.querySelector('.mode-description');
+  modeDescription.addEventListener('mouseover', () => {
+    modeDescription.style.display = 'block';
+  });
+
+  modeDescription.addEventListener('mouseout', () => {
+    modeDescription.style.display = 'none';
+  });
+
+  function showDescription(mode) {
+    // Скрываем все описания
+    document.querySelectorAll('.description-content').forEach(content => {
+      content.classList.remove('active');
+    });
+
+    // Показываем нужное описание
+    const targetDescription = document.querySelector(`.description-content[data-mode="${mode}"]`);
+    if (targetDescription) {
+      targetDescription.classList.add('active');
+      modeDescription.style.display = 'block';
+    }
+  }
+
+  function validateAndStart() {
+    const humans = parseInt(humanSelect.value);
+    const bots = parseInt(botSelect.value);
+    const total = humans + bots;
+    const mode = selectedMode;
+
+    if (humans < 1 || humans > 4) {
+      errorMsg.textContent = 'Игроков должно быть от 1 до 4';
+      errorMsg.style.animation = 'pulseError 0.5s';
+      setTimeout(() => { errorMsg.style.animation = ''; }, 500);
+      return false;
+    }
+
+    if (bots < 0 || bots > 7) {
+      errorMsg.textContent = 'Ботов должно быть от 0 до 7';
+      errorMsg.style.animation = 'pulseError 0.5s';
+      setTimeout(() => { errorMsg.style.animation = ''; }, 500);
+      return false;
+    }
+
+    if (total > MAX_PLAYERS) {
+      errorMsg.textContent = `Максимум ${MAX_PLAYERS} участников!`;
+      errorMsg.style.animation = 'pulseError 0.5s';
+      setTimeout(() => { errorMsg.style.animation = ''; }, 500);
+      return false;
+    }
+
+    // Проверка для режимов "Призрак"
+    if ((mode === 'half-ghost' || mode === 'full-ghost') && humans === 0) {
+      errorMsg.textContent = 'В этом режиме необходим хотя бы один игрок';
+      errorMsg.style.animation = 'pulseError 0.5s';
+      setTimeout(() => { errorMsg.style.animation = ''; }, 500);
+      return false;
+    }
+
+    // Проверка для режима "Магический шутер"
+    if (mode === 'magic-shooter' && humans === 0) {
+      errorMsg.textContent = 'В этом режиме необходим хотя бы один игрок';
+      errorMsg.style.animation = 'pulseError 0.5s';
+      setTimeout(() => { errorMsg.style.animation = ''; }, 500);
+      return false;
+    }
+
+    errorMsg.textContent = '';
+    return true;
+  }
+
+  // НОВАЯ ФУНКЦИЯ: Обновление отображения выбранного режима
+  function updateSelectedModeDisplay() {
+    let modeName = 'Классика';
+
+    switch(selectedMode) {
+      case 'half-ghost':
+        modeName = 'Полупризрак';
+        break;
+      case 'family-ghost':
+        modeName = 'Семейка недопризраков';
+        break;
+      case 'full-ghost':
+        modeName = 'Полноценный призрак';
+        break;
+      case 'all-ghosts':
+        modeName = 'Компашка призраков';
+        break;
+      case 'magic-shooter':
+        modeName = 'Магический шутер';
+        break;
+    }
+
+    selectedModeDisplay.textContent = modeName;
+  }
+
+  startControlsBtn.addEventListener('click', () => {
+    if (!validateAndStart()) return;
+    setupScreen.classList.remove('active');
+    setTimeout(() => {
+      setupScreen.style.display = 'none';
+      controlsScreen.style.display = 'flex';
+      controlsScreen.classList.add('active');
+    }, 300);
+  });
+
+  backBtn.addEventListener('click', () => {
+    controlsScreen.classList.remove('active');
+    setTimeout(() => {
+      controlsScreen.style.display = 'none';
+      setupScreen.style.display = 'flex';
+      setupScreen.classList.add('active');
+    }, 300);
+  });
+
+  startBtn.addEventListener('click', () => {
+    humanCount = parseInt(humanSelect.value);
+    const botCount = parseInt(botSelect.value);
+    if (!validateAndStart()) return;
+    playerControls = [];
+    for (let i = 0; i < humanCount; i++) {
+      playerControls.push(document.getElementById(`control-${i}`).value);
+    }
+    if (!isMobile) {
+      for (let i = 0; i < playerControls.length; i++) {
+        if (playerControls[i] === 'swipe') {
+          alert(`Игрок ${i + 1} выбрал свайпы, но устройство не сенсорное. Выберите клавиатуру.`);
+          return;
+        }
+      }
+    }
+    startGame(humanCount, botCount);
+  });
+
+  function setupAutoShoot() {
+    // Очищаем существующие таймеры
+    autoShootTimers.forEach(timer => {
+      if (timer) clearInterval(timer);
+    });
+    autoShootTimers = new Array(MAX_PLAYERS).fill(null);
+
+    // Создаем таймер для каждого игрока
+    for (let i = 0; i < totalPlayers; i++) {
+      autoShootTimers[i] = setInterval(() => {
+        if (gameRunning && snakes[i] !== null &&
+            specialEffectTypes[i] === SPECIAL_EFFECTS.WEAPON) {
+          shootBullet(i);
+        }
+      }, 1000); // 1000 мс = 1 секунда
+    }
+  }
+
+  function startGame(humans, bots) {
+    totalPlayers = humans + bots;
+    setupScreen.style.display = 'none';
+    controlsScreen.style.display = 'none';
+    gameContainer.style.display = 'block';
+    resizeCanvas();
+    // ✅ КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Полный сброс всех игровых данных
+    snakes = [];
+    directions = [];
+    scores = [];
+    colors = [];
+    playerTypes = [];
+    botStrategies = [];
+    foods = [];
+    particles = [];
+    botMemory = []; // Сброс памяти ботов
+
+    // Инициализация режима "Призрак"
+    isGhostMode = new Array(MAX_PLAYERS).fill(false);
+    ghostTimers = new Array(MAX_PLAYERS).fill(null);
+
+    // Инициализация для режима "Магический шутер"
+    if (gameMode === 'magic-shooter') {
+      specialFoodTimers = new Array(MAX_PLAYERS).fill(null);
+      specialEffectTypes = new Array(MAX_PLAYERS).fill(null);
+      diarrheaTimers = new Array(MAX_PLAYERS).fill(null);
+      autoShootTimers = new Array(MAX_PLAYERS).fill(null);
+      bullets = [];
+    }
+
+    // Получение выбранного режима игры
+    gameMode = selectedMode;
+
+    // Инициализация режимов "Призрак"
+    if (gameMode === 'full-ghost' || gameMode === 'all-ghosts') {
+      // В этих режимах все соответствующие игроки являются призраками с самого начала
+      for (let i = 0; i < totalPlayers; i++) {
+        if (gameMode === 'full-ghost' && i < humanCount) {
+          isGhostMode[i] = true;
+        } else if (gameMode === 'all-ghosts') {
+          isGhostMode[i] = true;
+        }
+      }
+      lastGhostActivation = Date.now();
+    } else {
+      lastGhostActivation = Date.now();
+    }
+
+    for (let i = 0; i < totalPlayers; i++) {
+      const startPos = getStartPos(i);
+      let initialDir;
+      if (startPos.x < 10) initialDir = { x: 1, y: 0 };
+      else if (startPos.x > tileCountX - 10) initialDir = { x: -1, y: 0 };
+      else if (startPos.y < 10) initialDir = { x: 0, y: 1 };
+      else if (startPos.y > tileCountY - 10) initialDir = { x: 0, y: -1 };
+      else initialDir = { x: 1, y: 0 };
+      snakes.push([startPos]);
+      directions.push(initialDir);
+      colors.push(COLOR_PALETTE[i % COLOR_PALETTE.length]);
+      if (i < humans) {
+        playerTypes.push('human');
+        botStrategies.push(null);
+        botMemory.push(null); // Инициализация памяти
       } else {
-        // Вертикальный свайп
-        arrow = dy > 0 ? '↓' : '↑';
-        rotation = dy > 0 ? 180 : 0;
+        playerTypes.push('bot');
+        const randomStrategy = ALL_STRATEGIES[Math.floor(Math.random() * ALL_STRATEGIES.length)];
+        botStrategies.push(randomStrategy);
+        botMemory.push(null); // Инициализация памяти
       }
-
-      swipeIndicator.innerHTML = `<div class="swipe-arrow">${arrow}</div>`;
-      swipeIndicator.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
-      swipeIndicator.classList.add('active');
-
-      // Позиционирование индикатора
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-      swipeIndicator.style.left = `${centerX}px`;
-      swipeIndicator.style.top = `${centerY}px`;
+      scores.push(0);
     }
 
-    function hideSwipeIndicator() {
-      swipeIndicator.classList.remove('active');
+    // ===== ПЕРВОНАЧАЛЬНАЯ СИНХРОНИЗАЦИЯ ОЧКОВ =====
+    syncScoreWithSnakeLength();
+
+    updateScoreDisplay();
+    generateFood();
+    clearInterval(foodTimer);
+    foodTimer = setInterval(() => { if (gameRunning) generateFood(); }, 4000);
+    gameRunning = true;
+    setupControls();
+
+    // Запускаем автоматическую стрельбу ПОСЛЕ инициализации всех игроков
+    if (gameMode === 'magic-shooter') {
+      setTimeout(setupAutoShoot, 1000); // Небольшая задержка для стабильности
     }
 
-    // ===== КОНЕЦ УПРАВЛЕНИЯ СВАЙПАМИ =====
+    gameLoop();
+  }
 
-    // Отрисовка
-    function draw() {
-      ctx.fillStyle = '#0a1628';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Сетка
-      ctx.strokeStyle = 'rgba(255,255,255,0.03)';
-      ctx.lineWidth = 1;
-      for (let x = 0; x <= canvas.width; x += TILE) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, canvas.height);
-        ctx.stroke();
-      }
-      for (let y = 0; y <= canvas.height; y += TILE) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(canvas.width, y);
-        ctx.stroke();
-      }
-
-      // Частицы
-      particles.forEach(p => {
-        const alpha = p.life / p.maxLife;
-        ctx.fillStyle = p.color.replace(')', `, ${alpha})`).replace('hsl', 'hsla');
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      particles = particles.filter(p => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life--;
-        p.vy += 0.05;
-        return p.life > 0;
-      });
-
-      // Змеи
-      gameState.players.forEach(player => {
-        if (!player.snake || !player.alive) return;
-        player.snake.forEach((seg, idx) => {
-          ctx.fillStyle = idx === 0 ? player.color.head : player.color.body;
-          const x = seg.x * TILE + 1;
-          const y = seg.y * TILE + 1;
-          const w = TILE - 2;
-          const h = TILE - 2;
-          const r = 5;
-
-          ctx.beginPath();
-          ctx.moveTo(x + r, y);
-          ctx.arcTo(x + w, y, x + w, y + h, r);
-          ctx.arcTo(x + w, y + h, x, y + h, r);
-          ctx.arcTo(x, y + h, x, y, r);
-          ctx.arcTo(x, y, x + w, y, r);
-          ctx.closePath();
-          ctx.fill();
-        });
-      });
-
-      // Еда
-      ctx.fillStyle = '#FF5252';
-      gameState.foods.forEach(f => {
-        ctx.beginPath();
-        ctx.arc((f.x + 0.5) * TILE, (f.y + 0.5) * TILE, (TILE - 6) / 2, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      requestAnimationFrame(draw);
-    }
+  function gameLoop() {
+    update();
     draw();
+    if (gameRunning) setTimeout(gameLoop, 100);
+  }
 
-    function createParticles(x, y, color) {
-      for (let i = 0; i < 14; i++) {
-        const angle = (Math.PI * 2 * i) / 14;
-        const speed = 1 + Math.random() * 2;
-        particles.push({
-          x: (x + 0.5) * TILE,
-          y: (y + 0.5) * TILE,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed,
-          life: 30,
-          maxLife: 30,
-          color: color
-        });
+  function resetGame() {
+    gameOverScreen.classList.remove('active');
+    setupScreen.style.display = 'flex';
+    setupScreen.classList.add('active');
+    controlsScreen.style.display = 'none';
+    gameContainer.style.display = 'none';
+    gameRunning = false;
+
+    // Удаляем существующие индикаторы эффектов
+    const existingIndicators = document.querySelectorAll('.effect-indicator');
+    existingIndicators.forEach(indicator => {
+      indicator.parentNode.removeChild(indicator);
+    });
+
+    // Очищаем интерфейс
+    scoresDiv.innerHTML = '';
+    legendDiv.innerHTML = '';
+
+    // Очищаем таймеры автоматической стрельбы
+    autoShootTimers.forEach(timer => {
+      if (timer) clearInterval(timer);
+    });
+    autoShootTimers = [];
+  }
+
+  if (!ctx.roundRect) {
+    ctx.roundRect = function(x, y, width, height, radius) {
+      if (width < 2 * radius) radius = width / 2;
+      if (height < 2 * radius) radius = height / 2;
+      this.beginPath();
+      this.moveTo(x + radius, y);
+      this.arcTo(x + width, y, x + width, y + height, radius);
+      this.arcTo(x + width, y + height, x, y + height, radius);
+      this.arcTo(x, y + height, x, y, radius);
+      this.arcTo(x, y, x + width, y, radius);
+      this.closePath();
+      return this;
+    };
+  }
+
+  humanSelect.addEventListener('change', () => {
+    const controlsList = document.getElementById('controls-list');
+    for (let i = 0; i < 4; i++) {
+      const row = controlsList.children[i];
+      if (i < parseInt(humanSelect.value)) {
+        row.style.display = 'flex';
+      } else {
+        row.style.display = 'none';
       }
     }
+  });
 
-    function updateScoresUI() {
-      scoresRow.innerHTML = '';
-      gameState.players.forEach(player => {
-        const chip = document.createElement('div');
-        chip.className = 'score-chip';
-        const aliveIndicator = player.alive ? '🟢' : '💀';
-        chip.innerHTML = `
-          <div class="score-dot" style="background:${player.color?.head || '#666'}"></div>
-          <span>${aliveIndicator} ${player.nickname}: ${player.score}</span>
-        `;
-        scoresRow.appendChild(chip);
-      });
+  // Функция для обновления отображения выбранного режима
+  function updateSelectedModeDisplay() {
+    let modeName = 'Классика';
+
+    switch(selectedMode) {
+      case 'half-ghost':
+        modeName = 'Полупризрак';
+        break;
+      case 'family-ghost':
+        modeName = 'Семейка недопризраков';
+        break;
+      case 'full-ghost':
+        modeName = 'Полноценный призрак';
+        break;
+      case 'all-ghosts':
+        modeName = 'Компашка призраков';
+        break;
+      case 'magic-shooter':
+        modeName = 'Магический шутер';
+        break;
     }
 
-    // Полноэкранный режим
-    function enterFullscreen() {
-      const elem = document.documentElement;
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen().catch(() => {});
-      } else if (elem.webkitRequestFullscreen) {
-        elem.webkitRequestFullscreen();
-      } else if (elem.msRequestFullscreen) {
-        elem.msRequestFullscreen();
-      }
-    }
+    selectedModeDisplay.textContent = modeName;
+  }
 
-    function exitFullscreen() {
-      if (document.exitFullscreen) {
-        document.exitFullscreen().catch(() => {});
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      }
-    }
-  </script>
+  // Инициализация при загрузке
+  humanSelect.dispatchEvent(new Event('change'));
+  updateSelectedModeDisplay();
+
+  // Анимация появления начального экрана
+  setTimeout(() => {
+    setupScreen.classList.add('active');
+  }, 300);
+</script>
 </body>
 </html>
