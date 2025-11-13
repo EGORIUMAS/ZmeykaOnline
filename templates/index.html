@@ -35,7 +35,8 @@
       color: var(--light-text);
       padding: 16px 12px;
       min-height: 100vh;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
       animation: gradientBG 15s ease infinite;
     }
     @keyframes gradientBG {
@@ -375,64 +376,7 @@
       font-size: 18px;
       text-shadow: 0 0 10px var(--green-glow);
     }
-    /* Стили для кнопок выбора управления */
-    .control-options {
-      position: relative;
-      margin: 8px 0;
-    }
-    .control-btn {
-      padding: 10px 16px;
-      background: rgba(121, 82, 179, 0.6);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 500;
-      font-family: 'Exo 2', sans-serif;
-      width: 90%;
-    }
-    .control-btn:hover {
-      transform: translateY(-1px);
-      background: rgba(121, 82, 179, 0.9);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    }
-    .control-options-list {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      display: none;
-      flex-direction: column;
-      gap: 6px;
-      background: rgba(30, 41, 59, 0.95);
-      padding: 12px;
-      border-radius: 16px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-      z-index: 10;
-      border: 1px solid rgba(121, 82, 179, 0.5);
-      backdrop-filter: blur(8px);
-      width: 90%;
-      margin-top: 5px;
-    }
-    .control-btn.active + .control-options-list,
-    .control-options:hover .control-options-list {
-      display: flex;
-    }
-    .control-option {
-      padding: 8px 12px;
-      background: rgba(67, 97, 238, 0.7);
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-size: 14px;
-      font-family: 'Exo 2', sans-serif;
-    }
-    .control-option:hover {
-      background: rgba(67, 97, 238, 0.9);
-      transform: translateX(3px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
+
     .control-row {
       display: flex;
       align-items: center;
@@ -1914,27 +1858,39 @@
     drawGrid();
     // Рисуем частицы
     for (let p of particles) {
-      const alpha = p.life / p.maxLife;
-      // Исправленная строка для корректной обработки цветов
-      let color;
-      if (p.color.includes('hsla')) {
-        // Заменяем последнее число перед закрывающей скобкой (альфа-канал)
-        color = p.color.replace(/[\d.]+\)$/, `${alpha})`);
-      } else if (p.color.includes('hsl')) {
-        // Если это hsl без альфа-канала, добавляем его
-        color = p.color.replace(')', `, ${alpha})`).replace('hsl', 'hsla');
+      // Проверяем, является ли это эмодзи-частицей
+      if (p.emoji) {
+        const alpha = p.life / p.maxLife;
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.font = '32px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(p.emoji, p.x, p.y);
+        ctx.restore();
       } else {
-        // Для других форматов цветов
-        color = p.color.replace(')', `, ${alpha})`).replace('rgb', 'rgba');
+        const alpha = p.life / p.maxLife;
+        // Исправленная строка для корректной обработки цветов
+        let color;
+        if (p.color.includes('hsla')) {
+          // Заменяем последнее число перед закрывающей скобкой (альфа-канал)
+          color = p.color.replace(/[\d.]+\)$/, `${alpha})`);
+        } else if (p.color.includes('hsl')) {
+          // Если это hsl без альфа-канала, добавляем его
+          color = p.color.replace(')', `, ${alpha})`).replace('hsl', 'hsla');
+        } else {
+          // Для других форматов цветов
+          color = p.color.replace(')', `, ${alpha})`).replace('rgb', 'rgba');
+        }
+        // Градиент для частиц
+        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 3);
+        gradient.addColorStop(0, color);
+        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+        ctx.fill();
       }
-      // Градиент для частиц
-      const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 3);
-      gradient.addColorStop(0, color);
-      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-      ctx.fill();
     }
     for (let i = 0; i < totalPlayers; i++) {
       if (snakes[i] !== null) {
@@ -2115,72 +2071,32 @@
   }
 
   function showEffectIndicator(playerIndex, effectType) {
-    let effectNames = {
-      [SPECIAL_EFFECTS.WEAPON]: "Оружие",
-      [SPECIAL_EFFECTS.INVULNERABILITY]: "Неуязвимость",
-      [SPECIAL_EFFECTS.DIARRHEA]: "Диарея"
-    };
-
     let icons = {
       [SPECIAL_EFFECTS.WEAPON]: "🔫",
       [SPECIAL_EFFECTS.INVULNERABILITY]: "🛡️",
       [SPECIAL_EFFECTS.DIARRHEA]: "💧"
     };
 
-    const existingIndicator = document.querySelector(`.effect-indicator[data-player="${playerIndex}"]`);
-    if (existingIndicator) {
-      existingIndicator.remove();
+    // Просто показываем эмодзи над игроком на несколько секунд
+    if (snakes[playerIndex] && snakes[playerIndex][0]) {
+      const head = snakes[playerIndex][0];
+      const emoji = icons[effectType];
+      
+      // Создаем анимированное эмодзи над головой игрока
+      const emojiParticle = {
+        x: (head.x + 0.5) * gridSize,
+        y: (head.y - 0.5) * gridSize,
+        vx: 0,
+        vy: -0.3,
+        life: 60,
+        maxLife: 60,
+        emoji: emoji,
+        playerIndex: playerIndex
+      };
+      
+      // Добавляем специальное свойство для отрисовки эмодзи
+      particles.push(emojiParticle);
     }
-
-    let effectIndicator = document.createElement('div');
-    effectIndicator.className = 'effect-indicator';
-    effectIndicator.dataset.player = playerIndex;
-    effectIndicator.innerHTML = `
-      <span class="effect-icon">${icons[effectType]}</span>
-      <span>${effectNames[effectType]} для ${playerTypes[playerIndex] === 'bot' ? 'Бота' : 'Игрока'} ${playerIndex + 1}</span>
-      <span class="effect-timer">10 сек</span>
-    `;
-    effectIndicator.style.position = 'absolute';
-    effectIndicator.style.bottom = '20px';
-    effectIndicator.style.left = '50%';
-    effectIndicator.style.transform = 'translateX(-50%)';
-    effectIndicator.style.background = 'rgba(30, 41, 59, 0.9)';
-    effectIndicator.style.padding = '8px 16px';
-    effectIndicator.style.borderRadius = '12px';
-    effectIndicator.style.border = '1px solid rgba(255, 255, 255, 0.1)';
-    effectIndicator.style.fontSize = '14px';
-    effectIndicator.style.zIndex = '5';
-    effectIndicator.style.display = 'flex';
-    effectIndicator.style.gap = '10px';
-    effectIndicator.style.alignItems = 'center';
-
-    document.body.appendChild(effectIndicator);
-
-    // Обновляем таймер
-    let remainingTime = 10;
-    const timerInterval = setInterval(() => {
-      remainingTime--;
-      const timerElement = effectIndicator.querySelector('.effect-timer');
-
-      if (timerElement) {
-        timerElement.textContent = `${remainingTime} сек`;
-      }
-
-      if (remainingTime <= 0 || specialEffectTypes[playerIndex] !== effectType) {
-        clearInterval(timerInterval);
-        if (effectIndicator.parentNode) {
-          effectIndicator.parentNode.removeChild(effectIndicator);
-        }
-      }
-    }, 1000);
-
-    // Удаляем индикатор через 10 секунд
-    setTimeout(() => {
-      if (effectIndicator.parentNode) {
-        effectIndicator.parentNode.removeChild(effectIndicator);
-      }
-      clearInterval(timerInterval);
-    }, 10000);
   }
 
   function checkInvulnerabilityEnd(playerIndex) {
@@ -3065,11 +2981,13 @@
     };
   }
 
-  humanSelect.addEventListener('change', () => {
+  // Обновление отображения строк управления в зависимости от количества игроков
+  humanSlider.addEventListener('input', () => {
     const controlsList = document.getElementById('controls-list');
+    const humanCount = parseInt(humanSlider.value);
     for (let i = 0; i < 4; i++) {
       const row = controlsList.children[i];
-      if (i < parseInt(humanSelect.value)) {
+      if (i < humanCount) {
         row.style.display = 'flex';
       } else {
         row.style.display = 'none';
@@ -3103,7 +3021,7 @@
   }
 
   // Инициализация при загрузке
-  humanSelect.dispatchEvent(new Event('change'));
+  humanSlider.dispatchEvent(new Event('input'));
   updateSelectedModeDisplay();
 
   // Анимация появления начального экрана
