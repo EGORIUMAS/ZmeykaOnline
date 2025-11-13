@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Змейка Онлайн 🐍</title>
+  <style>
+    :root{
+      --purple-700: #7C4DFF;
+      --purple-900: #5A31C9;
+      --green-500: #00C853;
+      --bg-1: linear-gradient(135deg, rgba(32,6,64,1) 0%, rgba(8,18,32,1) 60%);
+      --panel: rgba(255,255,255,0.04);
+      color-scheme: dark;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      font-family: Inter, "Segoe UI", Roboto, system-ui, -apple-system, Arial;
+      background: var(--bg-1);
+      color: #eaf0ff;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+      touch-action: manipulation; /* Оптимизация для тач-устройств */
+    }
+
+    /* Экран лобби */
+    #lobbyScreen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 20px;
+    }
+    .lobby-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+    h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, var(--purple-700), var(--green-500));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .subtitle {
+      color: #cbd6ff88;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #cbd6ffcc;
+    }
+    input, select {
+      width: 100%;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 12px 14px;
+      border-radius: 10px;
+      color: white;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    input:focus, select:focus {
+      border-color: var(--purple-700);
+      box-shadow: 0 0 0 3px rgba(124,77,255,0.1);
+    }
+    button {
+      width: 100%;
+      background: linear-gradient(90deg, var(--purple-700), var(--purple-900));
+      border: none;
+      color: white;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 8px 24px rgba(124,77,255,0.3);
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(124,77,255,0.4);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+    button.secondary {
+      background: linear-gradient(90deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+      box-shadow: none;
+    }
+    .desktop-only {
+      display: block;
+    }
+    .mobile-controls-toggle {
+      margin-top: 10px;
+      font-size: 14px;
+      text-align: center;
+    }
+    .mobile-controls-toggle a {
+      color: var(--purple-700);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* Экран комнаты */
+    #roomScreen {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      padding: 20px;
+    }
+    .room-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .room-code {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--purple-700);
+    }
+    .players-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 20px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 16px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .player-card {
+      background: rgba(255,255,255,0.04);
+      padding: 12px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .player-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--purple-700);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .start-button-wrap {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    /* Игровой экран */
+    #gameScreen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #000;
+      flex-direction: column;
+      touch-action: none; /* Отключаем стандартные жесты браузера */
+    }
+    .game-hud {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(10px);
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .scores-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .score-chip {
+      background: rgba(255,255,255,0.06);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .score-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .game-canvas-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    #gameCanvas {
+      background: #0a1628;
+      max-width: 100%;
+      max-height: 100%;
+      touch-action: none; /* Критически важно для свайпов! */
+    }
+
+    /* Мобильные кнопки */
+    .mobile-dpad {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 160px;
+      height: 160px;
+      display: none;
+      z-index: 100;
+    }
+    .dpad-grid {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+      gap: 8px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 20px;
+      padding: 10px;
+      backdrop-filter: blur(10px);
+    }
+    .dpad-btn {
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      color: white;
+      font-size: 24px;
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
+      touch-action: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dpad-btn:active {
+      background: rgba(124,77,255,0.5);
+    }
+
+    /* Оверлей инсульта */
+    .stroke-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,0,0,0.15);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      pointer-events: none;
+      animation: strokePulse 0.5s infinite;
+    }
+    .stroke-overlay.active {
+      display: flex;
+    }
+    @keyframes strokePulse {
+      0%, 100% { background: rgba(255,0,0,0.1); }
+      50% { background: rgba(255,0,0,0.25); }
+    }
+    .stroke-card {
+      background: linear-gradient(135deg, rgba(255,0,0,0.9), rgba(200,0,0,0.9));
+      padding: 30px 40px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(255,0,0,0.5);
+      animation: strokeShake 0.1s infinite;
+    }
+    @keyframes strokeShake {
+      0%, 100% { transform: translateX(0) rotate(0deg); }
+      25% { transform: translateX(-5px) rotate(-2deg); }
+      75% { transform: translateX(5px) rotate(2deg); }
+    }
+    .stroke-title {
+      font-size: 48px;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+    .stroke-subtitle {
+      font-size: 20px;
+      opacity: 0.9;
+    }
+
+    /* Модальное окно окончания раунда */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+    }
+    .modal.active {
+      display: flex;
+    }
+    .modal-content {
+      background: linear-gradient(180deg, rgba(40,20,80,1), rgba(20,10,40,1));
+      padding: 40px;
+      border-radius: 24px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+    }
+    .modal-title {
+      font-size: 32px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .results-list {
+      margin: 20px 0;
+    }
+    .result-item {
+      padding: 12px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Визуальная обратная связь для свайпов */
+    .swipe-indicator {
+      position: fixed;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 1000;
+    }
+    .swipe-indicator.active {
+      opacity: 0.7;
+    }
+    .swipe-arrow {
+      font-size: 48px;
+      text-shadow: 0 0 10px rgba(255,255,255,0.8);
+    }
+
+    /* Адаптив */
+    @media (max-width: 768px) {
+      .desktop-only { display: none; }
+      .mobile-dpad { display: block; }
+      #gameCanvas { width: 100vw; height: calc(100vh - 80px); }
+      .game-hud { font-size: 12px; }
+      .score-chip { padding: 6px 10px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Экран лобби -->
+  <div id="lobbyScreen">
+    <div class="lobby-card">
+      <h1>🐍 Змейка Онлайн</h1>
+      <p class="subtitle">Играйте с друзьями в реальном времени</p>
+
+      <div class="form-group">
+        <label>Ваш ник</label>
+        <input type="text" id="nicknameInput" value="Игрок" maxlength="20" />
+      </div>
+
+      <div class="form-group">
+        <label>Код комнаты</label>
+        <input type="text" id="roomCodeInput" value="" placeholder="Введите или создайте" />
+      </div>
+
+      <div class="form-group desktop-only">
+        <label>Локальных игроков (только ПК)</label>
+        <select id="localPlayersSelect">
+          <option value="1">1 игрок</option>
+          <option value="2">2 игрока</option>
+          <option value="3">3 игрока</option>
+          <option value="4">4 игрока</option>
+        </select>
+      </div>
+
+      <button id="joinBtn">Создать/Войти в комнату</button>
+
+      <div class="mobile-controls-toggle">
+        <a id="toggleMobileControls">Использовать мобильное управление?</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Экран комнаты (ожидание) -->
+  <div id="roomScreen">
+    <div class="room-header">
+      <h2>Комната</h2>
+      <div class="room-code">Код: <span id="currentRoomCode"></span></div>
+    </div>
+
+    <div class="players-grid" id="playersGrid">
+      <!-- Игроки добавляются динамически -->
+    </div>
+
+    <div class="start-button-wrap">
+      <button id="startRoundBtn" style="display:none;">🚀 Запустить раунд</button>
+      <button id="leaveRoomBtn" class="secondary">Покинуть комнату</button>
+    </div>
+  </div>
+
+  <!-- Игровой экран -->
+  <div id="gameScreen">
+    <div class="game-hud">
+      <div class="scores-row" id="scoresRow"></div>
+      <button id="exitGameBtn" class="secondary" style="padding:8px 16px;">Выйти</button>
+    </div>
+    <div class="game-canvas-wrap">
+      <canvas id="gameCanvas" width="1200" height="600"></canvas>
+    </div>
+
+    <!-- Мобильный D-pad -->
+    <div class="mobile-dpad">
+      <div class="dpad-grid">
+        <div></div>
+        <button class="dpad-btn" data-dir="up">↑</button>
+        <div></div>
+        <button class="dpad-btn" data-dir="left">←</button>
+        <div></div>
+        <button class="dpad-btn" data-dir="right">→</button>
+        <div></div>
+        <button class="dpad-btn" data-dir="down">↓</button>
+        <div></div>
+      </div>
+    </div>
+
+    <!-- Индикатор свайпов -->
+    <div class="swipe-indicator" id="swipeIndicator">
+      <div class="swipe-arrow">↑</div>
+    </div>
+  </div>
+
+  <!-- Оверлей инсульта -->
+  <div class="stroke-overlay" id="strokeOverlay">
+    <div class="stroke-card">
+      <div class="stroke-title">ИНСУЛЬТ! 😵</div>
+      <div class="stroke-subtitle" id="strokeTimer">Потеря контроля...</div>
+    </div>
+  </div>
+
+  <!-- Модальное окно результатов -->
+  <div class="modal" id="resultsModal">
+    <div class="modal-content">
+      <h2 class="modal-title">🏆 Раунд окончен!</h2>
+      <div class="results-list" id="resultsList"></div>
+      <button id="backToRoomBtn">Вернуться в комнату</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script>
+    // ДИНАМИЧЕСКОЕ ОПРЕДЕЛЕНИЕ URL ДЛЯ ВСЕХ УСТРОЙСТВ
+    const getSocketUrl = () => {
+        return `https://${window.location.hostname}`;
+    };
+
+    const socket = io(getSocketUrl(), {
+        transports: ['websocket'],
+        path: '/socket.io'
+    });
+
+    // Элементы UI
+    const lobbyScreen = document.getElementById('lobbyScreen');
+    const roomScreen = document.getElementById('roomScreen');
+    const gameScreen = document.getElementById('gameScreen');
+    const nicknameInput = document.getElementById('nicknameInput');
+    const roomCodeInput = document.getElementById('roomCodeInput');
+    const localPlayersSelect = document.getElementById('localPlayersSelect');
+    const joinBtn = document.getElementById('joinBtn');
+    const startRoundBtn = document.getElementById('startRoundBtn');
+    const leaveRoomBtn = document.getElementById('leaveRoomBtn');
+    const exitGameBtn = document.getElementById('exitGameBtn');
+    const playersGrid = document.getElementById('playersGrid');
+    const currentRoomCode = document.getElementById('currentRoomCode');
+    const scoresRow = document.getElementById('scoresRow');
+    const strokeOverlay = document.getElementById('strokeOverlay');
+    const strokeTimer = document.getElementById('strokeTimer');
+    const resultsModal = document.getElementById('resultsModal');
+    const resultsList = document.getElementById('resultsList');
+    const backToRoomBtn = document.getElementById('backToRoomBtn');
+    const toggleMobileControls = document.getElementById('toggleMobileControls');
+    const swipeIndicator = document.getElementById('swipeIndicator');
+
+    // Игровые переменные
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const GRID = { w: 60, h: 30 };
+    const TILE = 20;
+
+    let currentRoom = null;
+    let myPlayers = [];
+    let isHost = false;
+    let gameState = { players: [], foods: [] };
+    let particles = [];
+    let isMobile = /Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    let strokeActive = false;
+    let strokeInterval = null;
+    let forceMobileControls = false;
+
+    // Переменные для свайпов
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    let isSwiping = false;
+
+    canvas.width = GRID.w * TILE;
+    canvas.height = GRID.h * TILE;
+
+    // Генерация случайного кода комнаты
+    function generateRoomCode() {
+      return Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+
+    if (!roomCodeInput.value) {
+      roomCodeInput.value = generateRoomCode();
+    }
+
+    // Переключение на мобильное управление
+    toggleMobileControls.addEventListener('click', () => {
+      forceMobileControls = true;
+      alert('Теперь будет использоваться мобильное управление');
+    });
+
+    // Присоединение к комнате
+    joinBtn.addEventListener('click', () => {
+      const nickname = nicknameInput.value.trim() || 'Игрок';
+      const room = roomCodeInput.value.trim() || generateRoomCode();
+      const localCount = (isMobile || forceMobileControls) ? 1 : parseInt(localPlayersSelect.value);
+
+      socket.emit('create_room', {
+        room: room,
+        nickname: nickname,
+        device_type: (isMobile || forceMobileControls) ? 'mobile' : 'desktop',
+        local_count: localCount
+      });
+    });
+
+    // Обработчики Socket.IO
+    socket.on('joined', (data) => {
+      currentRoom = data.room;
+      myPlayers = data.players;
+      isHost = data.is_host;
+
+      lobbyScreen.style.display = 'none';
+      roomScreen.style.display = 'flex';
+      currentRoomCode.textContent = currentRoom;
+
+      if (isHost) {
+        startRoundBtn.style.display = 'block';
+      }
+    });
+
+    socket.on('players_update', (data) => {
+      playersGrid.innerHTML = '';
+      data.players.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'player-card';
+        const initial = p.nickname.charAt(0).toUpperCase();
+        const hostBadge = p.sid === data.host_sid ? ' 👑' : '';
+        card.innerHTML = `
+          <div class="player-avatar">${initial}</div>
+          <div>
+            <div style="font-weight:600;">${p.nickname}${hostBadge}</div>
+            <div style="font-size:11px;opacity:0.6;">Готов</div>
+          </div>
+        `;
+        playersGrid.appendChild(card);
+      });
+    });
+
+    socket.on('join_failed', (data) => {
+      alert(data.reason);
+    });
+
+    // Запуск раунда
+    startRoundBtn.addEventListener('click', () => {
+      socket.emit('start_round', { room: currentRoom });
+    });
+
+    socket.on('round_starting', () => {
+      roomScreen.style.display = 'none';
+      gameScreen.style.display = 'flex';
+      enterFullscreen();
+    });
+
+    socket.on('round_started', () => {
+      roomScreen.style.display = 'none';
+      gameScreen.style.display = 'flex';
+      enterFullscreen();
+    });
+
+    // Получение состояния игры
+    socket.on('state', (data) => {
+      gameState = data;
+      updateScoresUI();
+    });
+
+    // Поедание еды
+    socket.on('ate', (data) => {
+      const player = myPlayers.find(p => p.id === data.player_id);
+      if (player) {
+        createParticles(data.pos.x, data.pos.y, data.color);
+      }
+    });
+
+    // Инсульт
+    socket.on('stroke_start', (data) => {
+      const player = myPlayers.find(p => p.id === data.player_id);
+      if (player) {
+        strokeActive = true;
+        strokeOverlay.classList.add('active');
+
+        let remaining = data.duration;
+        strokeTimer.textContent = `Потеря контроля: ${remaining.toFixed(1)}s`;
+
+        if (strokeInterval) clearInterval(strokeInterval);
+        strokeInterval = setInterval(() => {
+          remaining -= 0.1;
+          strokeTimer.textContent = `Потеря контроля: ${Math.max(0, remaining).toFixed(1)}s`;
+          if (remaining <= 0) {
+            clearInterval(strokeInterval);
+          }
+        }, 100);
+      }
+    });
+
+    socket.on('stroke_end', (data) => {
+      const player = myPlayers.find(p => p.id === data.player_id);
+      if (player) {
+        strokeActive = false;
+        strokeOverlay.classList.remove('active');
+        if (strokeInterval) clearInterval(strokeInterval);
+      }
+    });
+
+    // Окончание раунда
+    socket.on('round_end', (data) => {
+      resultsList.innerHTML = '';
+
+      const sortedScores = Object.entries(data.scores)
+        .sort((a, b) => b[1].score - a[1].score);
+
+      sortedScores.forEach(([id, info], idx) => {
+        const item = document.createElement('div');
+        item.className = 'result-item';
+        let medal = '';
+        if (idx === 0) medal = '🥇';
+        else if (idx === 1) medal = '🥈';
+        else if (idx === 2) medal = '🥉';
+        else medal = '🏅';
+
+        // Проверяем, победитель ли это
+        const isWinner = data.winners.some(w => w.id === id);
+        const winnerMark = isWinner ? ' (Победитель!)' : '';
+
+        item.innerHTML = `
+          <span>${medal} ${info.nickname}${winnerMark}</span>
+          <span style="font-weight:700;">${info.score} очков</span>
+        `;
+        resultsList.appendChild(item);
+      });
+
+      resultsModal.classList.add('active');
+      exitFullscreen();
+    });
+
+    backToRoomBtn.addEventListener('click', () => {
+      resultsModal.classList.remove('active');
+      gameScreen.style.display = 'none';
+      roomScreen.style.display = 'flex';
+    });
+
+    // Выход из игры
+    leaveRoomBtn.addEventListener('click', () => {
+      socket.disconnect();
+      location.reload();
+    });
+
+    exitGameBtn.addEventListener('click', () => {
+      gameScreen.style.display = 'none';
+      roomScreen.style.display = 'flex';
+      exitFullscreen();
+    });
+
+    // Управление
+    const keyMap = {
+      'w': {p:0, dir:{x:0,y:-1}}, 'ц': {p:0, dir:{x:0,y:-1}},
+      's': {p:0, dir:{x:0,y:1}}, 'ы': {p:0, dir:{x:0,y:1}},
+      'a': {p:0, dir:{x:-1,y:0}}, 'ф': {p:0, dir:{x:-1,y:0}},
+      'd': {p:0, dir:{x:1,y:0}}, 'в': {p:0, dir:{x:1,y:0}},
+      'arrowup': {p:0, dir:{x:0,y:-1}},
+      'arrowdown': {p:0, dir:{x:0,y:1}},
+      'arrowleft': {p:0, dir:{x:-1,y:0}},
+      'arrowright': {p:0, dir:{x:1,y:0}},
+
+      'i': {p:1, dir:{x:0,y:-1}}, 'ш': {p:1, dir:{x:0,y:-1}},
+      'k': {p:1, dir:{x:0,y:1}}, 'л': {p:1, dir:{x:0,y:1}},
+      'j': {p:1, dir:{x:-1,y:0}}, 'о': {p:1, dir:{x:-1,y:0}},
+      'l': {p:1, dir:{x:1,y:0}}, 'д': {p:1, dir:{x:1,y:0}},
+
+      't': {p:2, dir:{x:0,y:-1}}, 'е': {p:2, dir:{x:0,y:-1}},
+      'g': {p:2, dir:{x:0,y:1}}, 'п': {p:2, dir:{x:0,y:1}},
+      'f': {p:2, dir:{x:-1,y:0}}, 'а': {p:2, dir:{x:-1,y:0}},
+      'h': {p:2, dir:{x:1,y:0}}, 'р': {p:2, dir:{x:1,y:0}},
+
+      'numpad8': {p:3, dir:{x:0,y:-1}},
+      'numpad5': {p:3, dir:{x:0,y:1}},
+      'numpad4': {p:3, dir:{x:-1,y:0}},
+      'numpad6': {p:3, dir:{x:1,y:0}},
+    };
+
+    window.addEventListener('keydown', (e) => {
+      if (gameScreen.style.display !== 'flex') return;
+      const key = e.key.length === 1 ? e.key.toLowerCase() : e.key.toLowerCase();
+      const map = keyMap[key];
+      if (!map || map.p >= myPlayers.length) return;
+
+      socket.emit('input_dir', {
+        room: currentRoom,
+        player_id: myPlayers[map.p].id,
+        dir: map.dir
+      });
+      e.preventDefault();
+    });
+
+    // Мобильный D-pad
+    document.querySelectorAll('.dpad-btn').forEach(btn => {
+      btn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (gameScreen.style.display !== 'flex') return;
+        const dir = btn.dataset.dir;
+        const dirMap = {
+          up: {x:0,y:-1},
+          down: {x:0,y:1},
+          left: {x:-1,y:0},
+          right: {x:1,y:0}
+        };
+        if (myPlayers.length > 0) {
+          socket.emit('input_dir', {
+            room: currentRoom,
+            player_id: myPlayers[0].id,
+            dir: dirMap[dir]
+          });
+        }
+      });
+
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (gameScreen.style.display !== 'flex') return;
+        const dir = btn.dataset.dir;
+        const dirMap = {
+          up: {x:0,y:-1},
+          down: {x:0,y:1},
+          left: {x:-1,y:0},
+          right: {x:1,y:0}
+        };
+        if (myPlayers.length > 0) {
+          socket.emit('input_dir', {
+            room: currentRoom,
+            player_id: myPlayers[0].id,
+            dir: dirMap[dir]
+          });
+        }
+      });
+    });
+
+    // ===== УПРАВЛЕНИЕ СВАЙПАМИ ДЛЯ ВСЕХ УСТРОЙСТВ =====
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+    canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+    canvas.addEventListener('touchcancel', handleTouchEnd, { passive: false });
+
+    function handleTouchStart(e) {
+      if (gameScreen.style.display !== 'flex' || strokeActive) return;
+
+      if (e.touches.length === 1) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchStartTime = Date.now();
+        isSwiping = true;
+        e.preventDefault();
+      }
+    }
+
+    function handleTouchMove(e) {
+      if (!isSwiping || strokeActive) return;
+
+      e.preventDefault();
+
+      if (e.touches.length === 1) {
+        const currentX = e.touches[0].clientX;
+        const currentY = e.touches[0].clientY;
+
+        // Показать визуальную подсказку направления
+        const dx = currentX - touchStartX;
+        const dy = currentY - touchStartY;
+
+        if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+          showSwipeIndicator(dx, dy);
+        }
+      }
+    }
+
+    function handleTouchEnd(e) {
+      if (!isSwiping || strokeActive) {
+        isSwiping = false;
+        hideSwipeIndicator();
+        return;
+      }
+
+      isSwiping = false;
+      hideSwipeIndicator();
+
+      if (e.changedTouches.length === 0) return;
+
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+      const touchDuration = Date.now() - touchStartTime;
+
+      // Минимальное расстояние и максимальная длительность для свайпа
+      const dx = touchEndX - touchStartX;
+      const dy = touchEndY - touchStartY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      // Настройки чувствительности
+      const MIN_DISTANCE = 50; // пикселей
+      const MAX_DURATION = 500; // миллисекунд
+
+      if (distance > MIN_DISTANCE && touchDuration < MAX_DURATION && myPlayers.length > 0) {
+        let dir = {x: 0, y: 0};
+
+        if (Math.abs(dx) > Math.abs(dy)) {
+          // Горизонтальный свайп
+          dir.x = dx > 0 ? 1 : -1;
+        } else {
+          // Вертикальный свайп
+          dir.y = dy > 0 ? 1 : -1;
+        }
+
+        // Отправить команду для первого игрока
+        socket.emit('input_dir', {
+          room: currentRoom,
+          player_id: myPlayers[0].id,
+          dir: dir
+        });
+      }
+
+      e.preventDefault();
+    }
+
+    function showSwipeIndicator(dx, dy) {
+      let arrow = '↑';
+      let rotation = 0;
+
+      if (Math.abs(dx) > Math.abs(dy)) {
+        // Горизонтальный свайп
+        arrow = dx > 0 ? '→' : '←';
+        rotation = dx > 0 ? 0 : 180;
+      } else {
+        // Вертикальный свайп
+        arrow = dy > 0 ? '↓' : '↑';
+        rotation = dy > 0 ? 180 : 0;
+      }
+
+      swipeIndicator.innerHTML = `<div class="swipe-arrow">${arrow}</div>`;
+      swipeIndicator.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
+      swipeIndicator.classList.add('active');
+
+      // Позиционирование индикатора
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      swipeIndicator.style.left = `${centerX}px`;
+      swipeIndicator.style.top = `${centerY}px`;
+    }
+
+    function hideSwipeIndicator() {
+      swipeIndicator.classList.remove('active');
+    }
+
+    // ===== КОНЕЦ УПРАВЛЕНИЯ СВАЙПАМИ =====
+
+    // Отрисовка
+    function draw() {
+      ctx.fillStyle = '#0a1628';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Сетка
+      ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x <= canvas.width; x += TILE) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= canvas.height; y += TILE) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+
+      // Частицы
+      particles.forEach(p => {
+        const alpha = p.life / p.maxLife;
+        ctx.fillStyle = p.color.replace(')', `, ${alpha})`).replace('hsl', 'hsla');
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      particles = particles.filter(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+        p.vy += 0.05;
+        return p.life > 0;
+      });
+
+      // Змеи
+      gameState.players.forEach(player => {
+        if (!player.snake || !player.alive) return;
+        player.snake.forEach((seg, idx) => {
+          ctx.fillStyle = idx === 0 ? player.color.head : player.color.body;
+          const x = seg.x * TILE + 1;
+          const y = seg.y * TILE + 1;
+          const w = TILE - 2;
+          const h = TILE - 2;
+          const r = 5;
+
+          ctx.beginPath();
+          ctx.moveTo(x + r, y);
+          ctx.arcTo(x + w, y, x + w, y + h, r);
+          ctx.arcTo(x + w, y + h, x, y + h, r);
+          ctx.arcTo(x, y + h, x, y, r);
+          ctx.arcTo(x, y, x + w, y, r);
+          ctx.closePath();
+          ctx.fill();
+        });
+      });
+
+      // Еда
+      ctx.fillStyle = '#FF5252';
+      gameState.foods.forEach(f => {
+        ctx.beginPath();
+        ctx.arc((f.x + 0.5) * TILE, (f.y + 0.5) * TILE, (TILE - 6) / 2, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    function createParticles(x, y, color) {
+      for (let i = 0; i < 14; i++) {
+        const angle = (Math.PI * 2 * i) / 14;
+        const speed = 1 + Math.random() * 2;
+        particles.push({
+          x: (x + 0.5) * TILE,
+          y: (y + 0.5) * TILE,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 30,
+          maxLife: 30,
+          color: color
+        });
+      }
+    }
+
+    function updateScoresUI() {
+      scoresRow.innerHTML = '';
+      gameState.players.forEach(player => {
+        const chip = document.createElement('div');
+        chip.className = 'score-chip';
+        const aliveIndicator = player.alive ? '🟢' : '💀';
+        chip.innerHTML = `
+          <div class="score-dot" style="background:${player.color?.head || '#666'}"></div>
+          <span>${aliveIndicator} ${player.nickname}: ${player.score}</span>
+        `;
+        scoresRow.appendChild(chip);
+      });
+    }
+
+    // Полноэкранный режим
+    function enterFullscreen() {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(() => {});
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      }
+    }
+
+    function exitFullscreen() {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
+  </script>
+</body>
+</html>
