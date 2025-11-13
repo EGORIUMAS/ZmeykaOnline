@@ -16,10 +16,11 @@ app.config['SECRET_KEY'] = 'snake-secret-key-2025'
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
 
 # Константы игры
-GRID_W = 60
-GRID_H = 30
+BASE_GRID_W = 60
+BASE_GRID_H = 30
 TICK_MS = 120
-MAX_PLAYERS_PER_ROOM = 12
+MAX_PLAYERS_PER_ROOM = 100  # Неограниченное количество игроков
+FIELD_SCALE_THRESHOLD = 8  # Каждые 8 игроков поле увеличивается
 
 
 class Player:
@@ -52,6 +53,9 @@ class RoomGame:
         self._stop = False
         self.bg_task = None
         self.host_sid = None  # создатель комнаты
+        self.grid_w = BASE_GRID_W
+        self.grid_h = BASE_GRID_H
+        self.wins = {}  # Таблица побед
 
     def add_player(self, player: Player) -> bool:
         with self.lock:
@@ -59,8 +63,16 @@ class RoomGame:
                 self.players.append(player)
                 if self.host_sid is None:
                     self.host_sid = player.sid
+                self.update_field_size()
                 return True
             return False
+    
+    def update_field_size(self):
+        """Обновляет размер поля в зависимости от количества игроков"""
+        player_count = len(self.players)
+        scale = player_count // FIELD_SCALE_THRESHOLD
+        self.grid_w = BASE_GRID_W * (2 ** scale)
+        self.grid_h = BASE_GRID_H * (2 ** scale)
 
     def remove_player_by_sid(self, sid: str):
         with self.lock:
@@ -80,8 +92,8 @@ class RoomGame:
                     attempts += 1
                     if attempts > 200:
                         break
-                    x = random.randrange(GRID_W)
-                    y = random.randrange(GRID_H)
+                    x = random.randrange(self.grid_w)
+                    y = random.randrange(self.grid_h)
                     occupied = False
                     for p in self.players:
                         if p.alive:
@@ -103,13 +115,16 @@ class RoomGame:
             if self.running:
                 return False
 
+            # Обновляем размер поля перед стартом
+            self.update_field_size()
+
             slots = [
                 (5, 5, {'x': 1, 'y': 0}),
-                (GRID_W - 6, 5, {'x': -1, 'y': 0}),
-                (5, GRID_H - 6, {'x': 1, 'y': 0}),
-                (GRID_W - 6, GRID_H - 6, {'x': -1, 'y': 0}),
-                (GRID_W // 2, 5, {'x': 0, 'y': 1}),
-                (GRID_W // 2, GRID_H - 6, {'x': 0, 'y': -1}),
+                (self.grid_w - 6, 5, {'x': -1, 'y': 0}),
+                (5, self.grid_h - 6, {'x': 1, 'y': 0}),
+                (self.grid_w - 6, self.grid_h - 6, {'x': -1, 'y': 0}),
+                (self.grid_w // 2, 5, {'x': 0, 'y': 1}),
+                (self.grid_w // 2, self.grid_h - 6, {'x': 0, 'y': -1}),
             ]
             colors = [
                 {'head': '#7C4DFF', 'body': '#5A31C9', 'particle': 'hsla(270,100%,60%,1)'},
@@ -192,8 +207,8 @@ class RoomGame:
 
                 # Вычислить новую голову
                 head = {
-                    'x': (p.snake[0]['x'] + p.dir['x']) % GRID_W,
-                    'y': (p.snake[0]['y'] + p.dir['y']) % GRID_H
+                    'x': (p.snake[0]['x'] + p.dir['x']) % self.grid_w,
+                    'y': (p.snake[0]['y'] + p.dir['y']) % self.grid_h
                 }
 
                 # Проверка коллизий
@@ -262,9 +277,16 @@ class RoomGame:
             if len(alive) <= 1 and len(self.players) >= 2:
                 scores = {p.id: {'score': p.score, 'nickname': p.nickname} for p in self.players}
                 winners = [{'id': p.id, 'nickname': p.nickname} for p in alive]
+                
+                # Обновляем таблицу побед
+                for winner in winners:
+                    nick = winner['nickname']
+                    self.wins[nick] = self.wins.get(nick, 0) + 1
+                
                 socketio.emit('round_end', {
                     'scores': scores,
-                    'winners': winners
+                    'winners': winners,
+                    'wins': self.wins
                 }, room=self.room_id)
                 self.running = False
                 self.started = False
@@ -288,7 +310,9 @@ class RoomGame:
                     } for p in self.players
                 ],
                 'foods': list(self.foods),
-                'tick': time.time()
+                'tick': time.time(),
+                'grid_w': self.grid_w,
+                'grid_h': self.grid_h
             }
             socketio.emit('state', snapshot, room=self.room_id)
 
@@ -298,7 +322,15 @@ rooms: Dict[str, RoomGame] = {}
 
 @app.route('/')
 def index():
+    return render_template('index_new.html')
+
+@app.route('/old')
+def index_old():
     return render_template('index.html')
+
+@app.route('/static/<path:path>')
+def send_static(path):
+    return send_from_directory('static', path)
 
 
 @socketio.on('create_room')

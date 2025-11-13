@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Змейка — Онлайн и Оффлайн</title>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <div class="floating-bg" id="floating-bg"></div>
+  
+  <button class="fullscreen-btn" id="fullscreen-btn" title="Полноэкранный режим">
+    <span>⛶</span>
+  </button>
+  
+  <h1>Змейка — Многопользовательская</h1>
+  
+  <!-- Экран выбора режима -->
+  <div id="mode-selection" class="screen active">
+    <h2>Выберите режим</h2>
+    <div class="mode-buttons">
+      <button id="btn-offline" class="mode-select-btn">
+        <span class="icon">🎮</span>
+        <span>Оффлайн</span>
+        <span class="desc">Игра на одном устройстве</span>
+      </button>
+      <button id="btn-online" class="mode-select-btn">
+        <span class="icon">🌐</span>
+        <span>Онлайн</span>
+        <span class="desc">Игра через интернет</span>
+      </button>
+    </div>
+    
+    <div class="wins-section">
+      <button id="show-wins-btn" class="secondary-btn">Таблица побед</button>
+      <div id="wins-table" style="display:none;"></div>
+    </div>
+  </div>
+  
+  <!-- Экран настройки оффлайн игры -->
+  <div id="offline-setup" class="screen">
+    <h2>Настройка оффлайн игры</h2>
+    
+    <div class="player-selector">
+      <div class="slider-group">
+        <div class="slider-label">
+          <span>👤 Игроков:</span>
+          <span class="slider-value" id="human-value">1</span>
+        </div>
+        <input type="range" id="human-players" min="1" max="4" value="1" step="1">
+      </div>
+      
+      <div class="slider-group">
+        <div class="slider-label">
+          <span>🤖 Ботов:</span>
+          <span class="slider-value" id="bot-value">0</span>
+        </div>
+        <input type="range" id="bot-count" min="0" max="7" value="0" step="1">
+      </div>
+    </div>
+    
+    <div class="mode-selection-section">
+      <label>Режим игры:</label>
+      <div class="mode-selector">
+        <button class="mode-btn active" data-mode="classic">Классика</button>
+        <button class="mode-btn" data-mode="magic-shooter">Магический шутер</button>
+      </div>
+    </div>
+    
+    <div class="selected-mode-display">
+      <span>Выбранный режим:</span>
+      <span class="mode-name" id="selected-mode-display">Классика</span>
+    </div>
+    
+    <div id="error-message" class="error-message"></div>
+    
+    <div class="button-group">
+      <button id="start-offline-btn" class="primary-btn">Начать игру</button>
+      <button class="back-btn secondary-btn">Назад</button>
+    </div>
+  </div>
+  
+  <!-- Экран настройки онлайн игры -->
+  <div id="online-setup" class="screen">
+    <h2>Настройка онлайн игры</h2>
+    
+    <div class="input-group">
+      <label for="nickname-input">Ваш ник:</label>
+      <input type="text" id="nickname-input" placeholder="Введите ник" maxlength="20">
+    </div>
+    
+    <div class="input-group">
+      <label for="room-input">Код комнаты (оставьте пустым для создания новой):</label>
+      <input type="text" id="room-input" placeholder="Код комнаты" maxlength="6">
+    </div>
+    
+    <div class="input-group" id="local-players-group" style="display:none;">
+      <label for="local-count">Игроков на устройстве:</label>
+      <input type="number" id="local-count" min="1" max="4" value="1">
+    </div>
+    
+    <div id="control-type-selector" style="display:none;">
+      <label>Управление на мобильном:</label>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="control-type" value="swipe" checked>
+          <span>Свайпы</span>
+        </label>
+        <label>
+          <input type="radio" name="control-type" value="buttons">
+          <span>Кнопки</span>
+        </label>
+      </div>
+    </div>
+    
+    <div id="error-message-online" class="error-message"></div>
+    
+    <div class="button-group">
+      <button id="join-room-btn" class="primary-btn">Присоединиться</button>
+      <button class="back-btn secondary-btn">Назад</button>
+    </div>
+  </div>
+  
+  <!-- Экран лобби -->
+  <div id="lobby-screen" class="screen">
+    <h2>Комната: <span id="room-code-display"></span></h2>
+    
+    <div class="lobby-info">
+      <p>Игроки в комнате:</p>
+      <div id="players-list" class="players-list"></div>
+    </div>
+    
+    <div class="button-group">
+      <button id="start-round-btn" class="primary-btn" style="display:none;">Запустить раунд</button>
+      <button id="leave-room-btn" class="secondary-btn">Покинуть комнату</button>
+    </div>
+  </div>
+  
+  <!-- Игровой контейнер -->
+  <div id="game-container" style="display:none;">
+    <canvas id="game-board"></canvas>
+    
+    <!-- Кнопки управления для мобильных -->
+    <div id="button-controls" style="display:none;">
+      <button id="btn-up" class="control-btn">↑</button>
+      <button id="btn-left" class="control-btn">←</button>
+      <button id="btn-down" class="control-btn">↓</button>
+      <button id="btn-right" class="control-btn">→</button>
+    </div>
+    
+    <div id="game-over">
+      <div class="game-over-content">
+        <h2>Игра окончена!</h2>
+        <p>Победитель: <span id="winner">Ничья</span></p>
+        <div id="final-scores"></div>
+        <button id="play-again-btn" class="primary-btn">Играть снова</button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="scores" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:12px 0;"></div>
+  <div id="legend" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:12px 0;"></div>
+  
+  <!-- Подключение Socket.IO -->
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  
+  <!-- Подключение модулей -->
+  <script src="/static/js/config.js"></script>
+  <script src="/static/js/storage.js"></script>
+  <script src="/static/js/renderer.js"></script>
+  <script src="/static/js/controls.js"></script>
+  <script src="/static/js/online.js"></script>
+  <script src="/static/js/ui.js"></script>
+  <script src="/static/js/main.js"></script>
+</body>
+</html>
