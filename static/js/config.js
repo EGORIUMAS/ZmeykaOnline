@@ -7,7 +7,7 @@ const CONFIG = {
   MAX_PLAYERS: 8,
   MAX_PLAYERS_PER_ROOM: 12,
   FIELD_SCALE_THRESHOLD: 8, // Каждые 8 игроков поле увеличивается
-  SERVER_URL: 'https://zmeyka.cloudpub.ru',
+  SERVER_URL: window.WS_CONFIG ? `http://${window.WS_CONFIG.host}:${window.WS_CONFIG.port}` : 'http://localhost:8000',
   
   COLORS: [
     { head: '#7C4DFF', body: '#5A31C9', particle: 'hsla(270,100%,60%,1)' },

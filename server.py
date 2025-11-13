@@ -1,6 +1,6 @@
 # server.py
 # Улучшенный мультиплеерный сервер змейки
-# pip install flask flask-socketio eventlet
+# pip install flask flask-socketio eventlet python-dotenv
 
 import random
 import time
@@ -10,10 +10,14 @@ from typing import Dict, List
 from flask import Flask, render_template, request, send_from_directory
 from flask_socketio import SocketIO, join_room, leave_room, emit
 import os
+from dotenv import load_dotenv
+
+# Загрузка переменных окружения
+load_dotenv()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.config['SECRET_KEY'] = 'snake-secret-key-2025'
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
 
 # Константы игры
 BASE_GRID_W = 60
@@ -178,7 +182,7 @@ class RoomGame:
                     self.tick()
                 except Exception as e:
                     print("Ошибка в тике:", e)
-            socketio.sleep(self.tick_interval / 2.0)
+            time.sleep(self.tick_interval / 2.0)
 
     def tick(self):
         with self.lock:
@@ -322,11 +326,9 @@ rooms: Dict[str, RoomGame] = {}
 
 @app.route('/')
 def index():
-    return render_template('index_new.html')
-
-@app.route('/old')
-def index_old():
-    return render_template('index.html')
+    ws_host = os.getenv('WEBSOCKET_HOST', 'localhost')
+    ws_port = os.getenv('WEBSOCKET_PORT', '8000')
+    return render_template('index.html', ws_host=ws_host, ws_port=ws_port)
 
 @app.route('/static/<path:path>')
 def send_static(path):
@@ -458,5 +460,7 @@ def broadcast_player_list(room_id):
 
 
 if __name__ == '__main__':
-    print("🐍 Сервер змейки запущен на http://0.0.0.0:8080")
-    socketio.run(app, host='0.0.0.0', port=8080, debug=True)
+    port = int(os.getenv('WEBSOCKET_PORT', '8000'))
+    host = os.getenv('WEBSOCKET_HOST', 'localhost')
+    print(f"🐍 Сервер змейки запущен на http://{host}:{port}")
+    socketio.run(app, host='0.0.0.0', port=port, debug=True)
