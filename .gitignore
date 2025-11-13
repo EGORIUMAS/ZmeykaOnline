@@ -201,6 +201,10 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
+.vscode/
+.kiro/
+.deprecated/
+
 # Marimo
 marimo/_static/
 marimo/_lsp/
